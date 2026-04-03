@@ -10,4 +10,14 @@ class UserController extends Controller
     {
         return view('index');
     }
+
+    public function showLogin()
+    {
+        return view('auth/login');
+    }
+
+    public function showRegister()
+    {
+        return view('auth/register');
+    }
 }

@@ -36,8 +36,9 @@
             </a>
 
             <nav class="flex items-center gap-3">
-                <a href="#" class="hidden sm:inline-flex px-4 py-2 rounded-lg btn-outline">Register</a>
-                <a href="#" class="px-5 py-2 rounded-lg btn-primary">Login</a>
+                <a href="{{ route('register') }}"
+                    class="hidden sm:inline-flex px-4 py-2 rounded-lg btn-outline">Register</a>
+                <a href="{{ route('login') }}" class="px-5 py-2 rounded-lg btn-primary">Login</a>
             </nav>
 
         </div>
@@ -371,7 +372,7 @@
                 </div>
 
                 <nav class="flex items-center gap-6">
-                    <a href="#"
+                    <a href="{{ route('login') }}"
                         class="text-xs font-light text-text-muted hover:text-gray-900 transition-colors">Login</a>
                     <a href="#"
                         class="text-xs font-light text-text-muted hover:text-gray-900 transition-colors">Contact</a>
