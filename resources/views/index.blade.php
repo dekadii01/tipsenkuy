@@ -243,7 +243,7 @@
                 <div class="text-center mb-20">
                     <span class="tag">How It Works</span>
                     <h2 class="mt-5 text-3xl md:text-4xl tracking-tight text-text-base">
-                        Three steps, zero hassle.
+                        Simple attendance in three seamless steps.
                     </h2>
                 </div>
 
@@ -265,9 +265,9 @@
                                     stroke-width="1.5" stroke-linecap="round" />
                             </svg>
                         </div>
-                        <h3 class="text-base font-medium mb-2 text-text-base">Generate QR</h3>
+                        <h3 class="text-base font-medium mb-2 text-text-base">Create Session</h3>
                         <p class="text-sm font-light leading-relaxed max-w-xs text-text-muted">
-                            Admin creates a session and a unique QR code is instantly generated for that event.
+                            Admin starts a session and instantly generates a unique QR code for that attendance period.
                         </p>
                     </div>
 
@@ -286,9 +286,10 @@
                                 <path d="M14 23v1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
                             </svg>
                         </div>
-                        <h3 class="text-base font-medium mb-2 text-text-base">Scan QR</h3>
+                        <h3 class="text-base font-medium mb-2 text-text-base">Scan QR Code</h3>
                         <p class="text-sm font-light leading-relaxed max-w-xs text-text-muted">
-                            Participants scan the QR code using their smartphone camera — no app installation needed.
+                            Participants simply scan the QR code using their device — quick, seamless, and no setup
+                            required.
                         </p>
                     </div>
 
@@ -305,7 +306,7 @@
                         </div>
                         <h3 class="text-base font-medium mb-2 text-text-base">Attendance Recorded</h3>
                         <p class="text-sm font-light leading-relaxed max-w-xs text-text-muted">
-                            Attendance is instantly logged and visible in the admin dashboard — real-time, no delays.
+                            Attendance is securely recorded in real-time and instantly visible in the admin dashboard.
                         </p>
                     </div>
 
@@ -313,7 +314,7 @@
 
                 <div class="mt-16 text-center">
                     <a href="#" class="btn-primary gap-2 px-8 py-3.5 rounded-xl w-fit">
-                        Start for Free
+                        Get Started
                         <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                             <path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5"
                                 stroke-linecap="round" stroke-linejoin="round" />

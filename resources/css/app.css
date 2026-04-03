@@ -32,6 +32,11 @@
     --animate-scan-line: scanLine 2.5s ease-in-out infinite;
 }
 
+
+*{
+    scroll-behavior: smooth;
+}
+
 /* ─── Keyframes ──────────────────────────────────────────────────────────── */
 @keyframes fadeUp {
     from { opacity: 0; transform: translateY(18px); }
