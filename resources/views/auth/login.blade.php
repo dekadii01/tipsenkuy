@@ -1,21 +1,4 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login — {{ config('app.name', 'TipsenKuy') }}</title>
-
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=dm-sans:200,300,400,500&family=dm-mono:300,400" rel="stylesheet" />
-
-    @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @endif
-</head>
-
-<body class="auth-body">
-
+<x-layout-main title="Login" bodyClass="auth-body ">
     <aside class="panel-left">
 
         <div class="panel-ring" style="width:320px;height:320px;top:-80px;left:-80px;"></div>
@@ -189,6 +172,4 @@
         </div>
     </main>
 
-</body>
-
-</html>
+</x-layout-main>

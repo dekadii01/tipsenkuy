@@ -1,22 +1,4 @@
-<!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>{{ config('app.name', 'Laravel') }}</title>
-
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
-
-    @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @endif
-</head>
-
-<body>
-
+<x-layout-main title="Home - TipsenKuy">
     <header class="navbar">
         <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
 
@@ -73,7 +55,7 @@
                         <div
                             class="mt-10 flex flex-wrap items-center gap-3 justify-center lg:justify-start
                                     animate-fade-up delay-350">
-                            <a href="#" class="btn-primary gap-2 px-7 py-3 rounded-xl">
+                            <a href="#" class="btn-primary gap-2 px-7 py-3 rounded-xl w-fit">
                                 Get Started
                                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                                     <path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5"
@@ -98,10 +80,8 @@
                                     <rect x="14" y="14" width="22" height="22" rx="2" fill="white" />
                                     <rect x="20" y="20" width="10" height="10" rx="1" fill="#0f4c81" />
                                     <rect x="78" y="8" width="34" height="34" rx="4" fill="#0f4c81" />
-                                    <rect x="84" y="14" width="22" height="22" rx="2"
-                                        fill="white" />
-                                    <rect x="90" y="20" width="10" height="10" rx="1"
-                                        fill="#0f4c81" />
+                                    <rect x="84" y="14" width="22" height="22" rx="2" fill="white" />
+                                    <rect x="90" y="20" width="10" height="10" rx="1" fill="#0f4c81" />
                                     <rect x="8" y="78" width="34" height="34" rx="4"
                                         fill="#0f4c81" />
                                     <rect x="14" y="84" width="22" height="22" rx="2"
@@ -332,7 +312,7 @@
                 </div>
 
                 <div class="mt-16 text-center">
-                    <a href="#" class="btn-primary gap-2 px-8 py-3.5 rounded-xl">
+                    <a href="#" class="btn-primary gap-2 px-8 py-3.5 rounded-xl w-fit">
                         Start for Free
                         <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
                             <path d="M3 7h8M8 4l3 3-3 3" stroke="currentColor" stroke-width="1.5"
@@ -394,6 +374,4 @@
 
         </div>
     </footer>
-</body>
-
-</html>
+</x-layout-main>
