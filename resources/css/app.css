@@ -1,0 +1,240 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+
+/* ─── Google Fonts ───────────────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,200;0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Mono:wght@300;400&display=swap');
+
+/* ─── Design Tokens ──────────────────────────────────────────────────────── */
+@theme {
+    /* Fonts */
+    --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'DM Mono', ui-monospace, monospace;
+
+    /* Brand colors */
+    --color-accent:        #0f4c81;
+    --color-accent-dark:   #0a3d6b;
+    --color-accent-light:  #e8f0f9;
+    --color-accent-border: #c0d4ea;
+    --color-accent-muted:  #9ca3af;
+
+    /* Surface & text */
+    --color-surface:       #fafafa;
+    --color-text-base:     #0d0d0d;
+    --color-text-muted:    #6b7280;
+    --color-border:        #e5e7eb;
+
+    /* Animations */
+    --animate-fade-up:   fadeUp 0.6s ease both;
+    --animate-scan-line: scanLine 2.5s ease-in-out infinite;
+}
+
+/* ─── Keyframes ──────────────────────────────────────────────────────────── */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes scanLine {
+    0%,  100% { transform: translateY(-40px); opacity: 0;   }
+    20%        {                               opacity: 0.6; }
+    50%        { transform: translateY(40px);  opacity: 0.5; }
+    80%        {                               opacity: 0.6; }
+}
+
+/* ─── Base ───────────────────────────────────────────────────────────────── */
+@layer base {
+    *, *::before, *::after {
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: var(--font-sans);
+        color: var(--color-text-base);
+        background-color: #ffffff;
+        -webkit-font-smoothing: antialiased;
+    }
+}
+
+/* ─── Components ─────────────────────────────────────────────────────────── */
+@layer components {
+
+    /* Navbar */
+    .navbar {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        border-bottom: 1px solid var(--color-border);
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(12px);
+    }
+
+    /* Buttons */
+    .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--color-accent);
+        color: #ffffff;
+        font-size: 0.875rem;
+        font-weight: 400;
+        transition: background-color 0.2s, transform 0.15s;
+    }
+    .btn-primary:hover {
+        background-color: var(--color-accent-dark);
+        transform: translateY(-1px);
+    }
+
+    .btn-outline {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--color-border);
+        color: var(--color-text-base);
+        font-size: 0.875rem;
+        font-weight: 300;
+        transition: border-color 0.2s, background-color 0.2s;
+    }
+    .btn-outline:hover {
+        border-color: #9ca3af;
+        background-color: var(--color-surface);
+    }
+
+    /* Feature card */
+    .feature-card {
+        border: 1px solid var(--color-border);
+        border-radius: 16px;
+        background-color: #ffffff;
+        transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    }
+    .feature-card:hover {
+        border-color: var(--color-accent-border);
+        box-shadow: 0 4px 24px rgba(15, 76, 129, 0.07);
+        transform: translateY(-2px);
+    }
+
+    /* Tag pill */
+    .tag {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-weight: 300;
+        font-size: 0.7rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--color-accent);
+        background-color: var(--color-accent-light);
+        border: 1px solid var(--color-accent-border);
+        border-radius: 9999px;
+        padding: 4px 14px;
+    }
+
+    /* Step number badge */
+    .step-num {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-weight: 300;
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+        color: var(--color-accent);
+        background-color: var(--color-accent-light);
+        border: 1px solid var(--color-accent-border);
+        border-radius: 8px;
+        padding: 2px 10px;
+    }
+
+    /* Icon containers */
+    .icon-wrap {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--color-accent-light);
+        border: 1px solid var(--color-accent-border);
+    }
+
+    .icon-wrap-lg {
+        width: 64px;
+        height: 64px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--color-accent-light);
+        border: 1px solid var(--color-accent-border);
+    }
+
+    /* Hero ring decorations */
+    .ring-outer {
+        border: 1px solid var(--color-border);
+        border-radius: 9999px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .ring-inner {
+        border: 1px solid var(--color-accent-border);
+        background-color: var(--color-accent-light);
+        border-radius: 9999px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+
+    /* Scan line animation */
+    .scan-line {
+        position: absolute;
+        pointer-events: none;
+        width: 120px;
+        height: 2px;
+        background: linear-gradient(to right, transparent, var(--color-accent), transparent);
+        opacity: 0.5;
+        animation: var(--animate-scan-line);
+    }
+
+    /* Hero gradient overlay */
+    .hero-gradient {
+        background: radial-gradient(ellipse 70% 60% at 50% -10%, rgba(15, 76, 129, 0.06) 0%, transparent 70%);
+    }
+
+    /* Dot grid background */
+    .dot-bg {
+        background-image: radial-gradient(circle, #e5e7eb 1px, transparent 1px);
+        background-size: 24px 24px;
+    }
+
+    /* Step vertical divider (desktop) */
+    .step-divider {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 33.333%;
+        width: 1px;
+        height: 64px;
+        background-color: var(--color-border);
+        pointer-events: none;
+    }
+    @media (min-width: 768px) {
+        .step-divider { display: block; }
+    }
+
+    /* Mono light helper */
+    .font-mono-light {
+        font-family: var(--font-mono);
+        font-weight: 300;
+    }
+}
+
+/* ─── Utilities ──────────────────────────────────────────────────────────── */
+@layer utilities {
+    .delay-100 { animation-delay: 0.1s; }
+    .delay-200 { animation-delay: 0.2s; }
+    .delay-350 { animation-delay: 0.35s; }
+    .delay-500 { animation-delay: 0.5s; }
+}
