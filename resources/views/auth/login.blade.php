@@ -21,7 +21,7 @@
         </div>
 
         <div class="panel-center-content">
-            <span class="tag tag--dark">Secure Login</span>
+            <span class="tag tag--dark w-fit">Secure Login</span>
             <h2 class="panel-tagline">
                 Welcome<br>back.
             </h2>

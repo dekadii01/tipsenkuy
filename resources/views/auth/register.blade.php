@@ -142,7 +142,7 @@
         </div>
 
         <div class="panel-center-content">
-            <span class="tag mb-6">Get Started</span>
+            <span class="tag mb-6 w-fit">Get Started</span>
             <h2 class="panel-tagline--dark">
                 Join in three<br>simple steps.
             </h2>
