@@ -1,6 +1,6 @@
 <x-layout-main title="Register" bodyClass="auth-body auth-body--register">
     <main class="panel-left">
-        <div class="form-card">
+        <form action="{{ route('register') }}" method="POST" class="form-card">
 
             <div class="brand brand--mb fade-up">
                 <div class="brand-icon brand-icon-dark">
@@ -120,7 +120,7 @@
                 </a>
             </p>
 
-        </div>
+        </form>
     </main>
 
     <aside class="panel-right">
