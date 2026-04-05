@@ -88,7 +88,7 @@
                         class="input-field" placeholder="Re-enter password" autocomplete="new-password" required>
                 </div>
 
-                <div class="checkbox-wrap checkbox-wrap--terms fade-up d6">
+                <div class="checkbox-wrap checkbox-wrap--terms fade-up d6 my-3">
                     <input type="checkbox" id="terms" name="terms" required>
                     <label for="terms" class="checkbox-label--terms">
                         I agree to the

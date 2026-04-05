@@ -129,7 +129,7 @@
                         placeholder="••••••••" autocomplete="current-password" required>
                 </div>
 
-                <div class="checkbox-wrap fade-up d4">
+                <div class="checkbox-wrap fade-up d4 my-3">
                     <input type="checkbox" id="remember" name="remember">
                     <label for="remember" class="checkbox-label">Keep me signed in</label>
                 </div>
