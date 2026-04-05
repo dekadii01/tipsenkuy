@@ -17,9 +17,18 @@
                 <span class="text-sm font-medium tracking-tight text-text-base">TipsenKuy</span>
             </a>
 
+            <div class="hidden md:flex gap-3">
+                <a href="#features"
+                    class="px-4 py-2 rounded-lg text-sm font-light text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-colors">Features</a>
+                <a href="#how"
+                    class="px-4 py-2 rounded-lg text-sm font-light text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-colors">How
+                    It Works</a>
+                <a href="#contact"
+                    class="px-4 py-2 rounded-lg text-sm font-light text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-colors">Contact</a>
+            </div>
+
             <nav class="flex items-center gap-3">
-                <a href="{{ route('register') }}"
-                    class="hidden sm:inline-flex px-4 py-2 rounded-lg btn-outline">Register</a>
+
                 <a href="{{ route('login') }}" class="px-5 py-2 rounded-lg btn-primary">Login</a>
             </nav>
 
@@ -81,7 +90,8 @@
                                     <rect x="20" y="20" width="10" height="10" rx="1" fill="#0f4c81" />
                                     <rect x="78" y="8" width="34" height="34" rx="4" fill="#0f4c81" />
                                     <rect x="84" y="14" width="22" height="22" rx="2" fill="white" />
-                                    <rect x="90" y="20" width="10" height="10" rx="1" fill="#0f4c81" />
+                                    <rect x="90" y="20" width="10" height="10" rx="1"
+                                        fill="#0f4c81" />
                                     <rect x="8" y="78" width="34" height="34" rx="4"
                                         fill="#0f4c81" />
                                     <rect x="14" y="84" width="22" height="22" rx="2"
@@ -328,7 +338,7 @@
     </main>
 
 
-    <footer class="bg-surface border-t border-border">
+    <footer id="contact" class="bg-surface border-t border-border">
         <div class="max-w-6xl mx-auto px-6 py-12">
             <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
 
