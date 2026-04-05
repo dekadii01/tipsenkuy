@@ -5,7 +5,7 @@
         <section class="flex items-start justify-between flex-wrap gap-3">
             <div>
                 <h1 class="text-2xl font-light tracking-tight text-gray-900">
-                    Halo, <span class="font-medium">{{ auth()->user()->name ?? 'User' }}</span> 👋
+                    Halo, <span class="font-medium">{{ auth()->user()->first_name ?? 'User' }}</span> 👋
                 </h1>
                 <p class="text-xs font-light text-gray-400 mt-1 tracking-wide">
                     {{ now()->translatedFormat('l, d F Y') }}

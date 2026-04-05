@@ -44,11 +44,11 @@
 
                         <div
                             class="w-8 h-8 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-xs font-medium text-blue-900 shrink-0 tracking-wide">
-                            {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 2)) }}
+                            {{ strtoupper(substr(auth()->user()->first_name ?? 'U', 0, 2)) }}
                         </div>
 
                         <span class="text-sm font-normal text-gray-800 max-w-30 truncate">
-                            {{ auth()->user()->name ?? 'User' }}
+                            {{ auth()->user()->first_name ?? 'User' }}
                         </span>
 
                         <svg width="12" height="12" viewBox="0 0 12 12"
