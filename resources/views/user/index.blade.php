@@ -141,7 +141,7 @@
                     </div>
                 </a>
 
-                <a href="#"
+                <a href="{{ route('attendance.user.history') }}"
                     class="flex flex-col items-center justify-center gap-2.5 px-4 py-5 bg-white hover:bg-gray-50 border border-gray-200 hover:border-gray-300 rounded-2xl transition-all duration-200 hover:-translate-y-px no-underline">
                     <div
                         class="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center">

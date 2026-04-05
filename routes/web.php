@@ -20,7 +20,12 @@ Route::post('/login', [AuthController::class, 'login'])
 // User Routes
 Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard-user')->middleware('auth');
 Route::get('/scanqr', [UserController::class, 'showScanQR'])->name('attendance.scan')->middleware('auth');
+Route::get('/history', [UserController::class, 'history'])->name('attendance.user.history')->middleware('auth');
 
 // Admin Routes
-Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('dashboard')->middleware('auth');
+Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('dashboard-admin')->middleware('auth');
+
+// Admin Attendance Routes
+Route::get('/admin/attendance', [AdminController::class, 'attendanceIndex'])->name('admin.attendance.index')->middleware('auth');
 Route::get('/admin/attendance/{id}', [AdminController::class, 'showAttendanceDetail'])->name('admin.attendance.detail')->middleware('auth');
+Route::get('/admin/create-attendance', [AdminController::class, 'showCreateAttendance'])->name('admin.attendance.create')->middleware('auth');

@@ -34,4 +34,9 @@ class UserController extends Controller
     {
         return view('user/scanqr');
     }
+
+    public function history()
+    {
+        return view('user/history');
+    }
 }
