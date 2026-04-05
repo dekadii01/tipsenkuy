@@ -58,7 +58,7 @@
                         placeholder="you@example.com" autocomplete="email" required>
                 </div>
 
-                <div class="input-group fade-up d3">
+                {{-- <div class="input-group fade-up d3">
                     <label for="role" class="input-label">I am registering as</label>
                     <select id="role" name="role" class="input-field input-field--select" required>
                         <option value="" disabled {{ old('role') ? '' : 'selected' }}>Select a role…</option>
@@ -67,7 +67,7 @@
                         <option value="participant" {{ old('role') == 'participant' ? 'selected' : '' }}>Participant /
                             Student</option>
                     </select>
-                </div>
+                </div> --}}
 
                 <div class="input-group fade-up d4">
                     <label for="password" class="input-label">Password</label>
