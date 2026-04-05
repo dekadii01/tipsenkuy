@@ -1,7 +1,6 @@
 <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-gray-200">
     <div class="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between">
 
-        {{-- Logo --}}
         <a href="{{ url('/') }}" class="flex items-center gap-2.5">
             <div class="w-7 h-7 rounded-lg bg-blue-900 flex items-center justify-center">
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -17,9 +16,7 @@
             <span class="text-sm font-medium tracking-tight text-gray-900">TipsenKuy</span>
         </a>
 
-        {{-- Right section: conditional based on current route --}}
         @if (request()->routeIs('attendance.scan'))
-            {{-- Back button (scan QR page) --}}
             <a href="{{ route('dashboard-user') }}"
                 class="flex items-center gap-1.5 px-3 py-1.5 border border-gray-200 rounded-xl text-sm font-light text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-colors no-underline">
                 <svg width="14" height="14" viewBox="0 0 14 14" fill="none" class="text-gray-400">
@@ -29,7 +26,6 @@
                 Kembali
             </a>
         @else
-            {{-- User menu (dashboard & other pages) --}}
             <div class="flex items-center gap-3">
 
                 <button
@@ -41,21 +37,47 @@
                     </svg>
                 </button>
 
-                <a href="#"
-                    class="flex items-center gap-2 px-2.5 py-1.5 border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-colors no-underline">
-                    <div
-                        class="w-8 h-8 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-xs font-medium text-blue-900 shrink-0 tracking-wide">
-                        {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 2)) }}
+                <div x-data="{ open: false }" class="relative">
+
+                    <button @click="open = !open"
+                        class="flex items-center gap-2 px-2.5 py-1.5 border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-colors">
+
+                        <div
+                            class="w-8 h-8 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-xs font-medium text-blue-900 shrink-0 tracking-wide">
+                            {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 2)) }}
+                        </div>
+
+                        <span class="text-sm font-normal text-gray-800 max-w-30 truncate">
+                            {{ auth()->user()->name ?? 'User' }}
+                        </span>
+
+                        <svg width="12" height="12" viewBox="0 0 12 12"
+                            class="text-gray-400 shrink-0 transition-transform" :class="{ 'rotate-180': open }">
+                            <path d="M3 5l3 3 3-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </button>
+
+                    <div x-show="open" @click.outside="open = false" x-transition
+                        class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden z-50">
+
+                        <a href=""
+                            class="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50">
+                            <span>👤</span> Profile
+                        </a>
+
+                        <div class="border-t border-gray-100"></div>
+
+                        <form method="POST" action="">
+                            @csrf
+                            <button type="submit"
+                                class="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50">
+                                <span>🚪</span> Logout
+                            </button>
+                        </form>
+
                     </div>
-                    <span class="text-sm font-normal text-gray-800 max-w-30 truncate">
-                        {{ auth()->user()->name ?? 'User' }}
-                    </span>
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"
-                        class="text-gray-400 shrink-0">
-                        <path d="M3 5l3 3 3-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
-                            stroke-linejoin="round" />
-                    </svg>
-                </a>
+                </div>
 
             </div>
         @endif

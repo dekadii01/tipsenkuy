@@ -1,5 +1,5 @@
 <x-layout-main bodyClass="bg-gray-50 text-gray-900 antialiased min-h-screen" title="Dashboard User">
-    <x-navbar-auth-user></x-navbar-auth-user>
+    <x-navbar-auth-user />
 
     <main class="max-w-5xl mx-auto px-6 py-10 flex flex-col gap-6">
         <section class="flex items-start justify-between flex-wrap gap-3">

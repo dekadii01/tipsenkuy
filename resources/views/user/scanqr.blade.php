@@ -1,15 +1,11 @@
 <x-layout-main bodyClass="bg-gray-50 text-gray-900 antialiased min-h-screen" title="Scan QR">
 
-    <x-navbar-auth-user></x-navbar-auth-user>
+    <x-navbar-auth-user />
 
 
-    {{-- ══════════════════════════════════════════
-         MAIN CONTENT
-    ══════════════════════════════════════════ --}}
     <main class="max-w-md mx-auto px-6 py-10 flex flex-col gap-8">
 
 
-        {{-- ── PAGE HEADER ── --}}
         <section class="text-center">
             <h1 class="text-2xl font-light tracking-tight text-gray-900">
                 Scan <span class="font-medium">QR Code</span>
@@ -20,16 +16,10 @@
         </section>
 
 
-        {{-- ══════════════════════════════════════════
-             STATE A — DEFAULT (Scanner active)
-             Remove this section when showing B or C
-        ══════════════════════════════════════════ --}}
         <section class="flex flex-col gap-5">
 
-            {{-- Scanner viewport --}}
             <div class="relative bg-gray-900 rounded-2xl overflow-hidden aspect-square w-full border border-gray-800">
 
-                {{-- Camera placeholder / will be replaced by actual video element --}}
                 <div class="absolute inset-0 flex items-center justify-center">
                     <div class="flex flex-col items-center gap-3 opacity-30">
                         <svg width="40" height="40" viewBox="0 0 40 40" fill="none" class="text-white">
@@ -46,57 +36,40 @@
                     </div>
                 </div>
 
-                {{-- Scan overlay frame — corner markers --}}
                 <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
                     <div class="relative w-52 h-52">
 
-                        {{-- Top-left corner --}}
                         <span
                             class="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-white rounded-tl-lg"></span>
-                        {{-- Top-right corner --}}
                         <span
                             class="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-white rounded-tr-lg"></span>
-                        {{-- Bottom-left corner --}}
                         <span
                             class="absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 border-white rounded-bl-lg"></span>
-                        {{-- Bottom-right corner --}}
                         <span
                             class="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-white rounded-br-lg"></span>
 
-                        {{-- Scan line (static decorative) --}}
                         <span class="absolute top-1/2 left-0 right-0 h-px bg-white/40"></span>
 
                     </div>
                 </div>
 
-                {{-- Corner dim overlays (vignette guide) --}}
                 <div class="absolute inset-0 pointer-events-none"
                     style="background: radial-gradient(ellipse 55% 55% at 50% 50%, transparent 40%, rgba(0,0,0,0.45) 100%);">
                 </div>
 
             </div>
 
-            {{-- Instruction text --}}
             <p class="text-center text-xs font-light text-gray-400 tracking-wide">
                 Pastikan QR berada di dalam area bingkai
             </p>
 
         </section>
-        {{-- END STATE A --}}
 
 
-        {{-- ══════════════════════════════════════════
-             STATE B — SUCCESS
-             Uncomment this block + remove State A when scan succeeds
-        ══════════════════════════════════════════ --}}
-        {{--
-        <section class="flex flex-col gap-5">
 
-            {{-- Scanner viewport (dimmed on success) --}}
         <div class="relative bg-gray-900 rounded-2xl overflow-hidden aspect-square w-full border border-gray-200">
             <div class="absolute inset-0 bg-white/10"></div>
 
-            {{-- Success overlay --}}
             <div class="absolute inset-0 flex items-center justify-center">
                 <div class="flex flex-col items-center gap-4">
                     <div
@@ -111,9 +84,8 @@
             </div>
         </div>
 
-        {{-- Success result card --}}
         <div class="bg-white border border-green-200 rounded-2xl overflow-hidden">
-            <div class="h-[3px] bg-green-600"></div>
+            <div class="h-0.75 bg-green-600"></div>
             <div class="p-5 flex items-start gap-4">
                 <div
                     class="w-10 h-10 rounded-xl bg-green-50 border border-green-200 flex items-center justify-center shrink-0">
@@ -137,7 +109,6 @@
             </div>
         </div>
 
-        {{-- Actions --}}
         <div class="flex flex-col gap-2.5">
             <a href="{{ route('dashboard-user') }}"
                 class="w-full flex items-center justify-center gap-2 py-3 bg-blue-900 hover:bg-blue-950 text-white text-sm font-normal rounded-xl transition-all duration-200 hover:-translate-y-px no-underline">
@@ -147,21 +118,10 @@
 
         </section>
 
-        {{-- END STATE B --}}
 
-
-        {{-- ══════════════════════════════════════════
-             STATE C — ERROR
-             Uncomment this block + remove State A when scan fails
-        ══════════════════════════════════════════ --}}
-        {{--
-        <section class="flex flex-col gap-5">
-
-            {{-- Scanner viewport (dimmed on error) --}}
         <div class="relative bg-gray-900 rounded-2xl overflow-hidden aspect-square w-full border border-gray-200">
             <div class="absolute inset-0 bg-white/5"></div>
 
-            {{-- Error overlay --}}
             <div class="absolute inset-0 flex items-center justify-center">
                 <div class="flex flex-col items-center gap-4">
                     <div
@@ -176,9 +136,8 @@
             </div>
         </div>
 
-        {{-- Error result card --}}
         <div class="bg-white border border-red-200 rounded-2xl overflow-hidden">
-            <div class="h-[3px] bg-red-500"></div>
+            <div class="h-0.75 bg-red-500"></div>
             <div class="p-5 flex items-start gap-4">
                 <div
                     class="w-10 h-10 rounded-xl bg-red-50 border border-red-200 flex items-center justify-center shrink-0">
@@ -195,7 +154,6 @@
             </div>
         </div>
 
-        {{-- Actions --}}
         <div class="flex flex-col gap-2.5">
             <a href=""
                 class="w-full flex items-center justify-center gap-2 py-3 bg-blue-900 hover:bg-blue-950 text-white text-sm font-normal rounded-xl transition-all duration-200 hover:-translate-y-px no-underline">
@@ -213,20 +171,16 @@
             </a>
         </div>
 
-        {{-- Bottom helper --}}
         <p class="text-center text-[0.7rem] font-light text-gray-400 leading-relaxed">
             Jika gagal scan, coba arahkan ulang kamera<br>atau minta admin untuk memperbarui QR
         </p>
 
         </section>
 
-        {{-- END STATE C --}}
 
 
-        {{-- ── DEFAULT BOTTOM HELPER (only shown in State A) ── --}}
         <section class="flex flex-col items-center gap-6">
 
-            {{-- Action buttons --}}
             <div class="w-full flex flex-col gap-2.5">
                 <a href="{{ route('dashboard-user') }}"
                     class="w-full flex items-center justify-center py-3 border border-gray-200 hover:bg-gray-50 hover:border-gray-300 text-sm font-light text-gray-700 rounded-xl transition-all duration-200 no-underline">
@@ -234,7 +188,6 @@
                 </a>
             </div>
 
-            {{-- Tip text --}}
             <p class="text-center text-[0.7rem] font-light text-gray-400 leading-relaxed">
                 Jika gagal scan, coba arahkan ulang kamera<br>atau minta admin untuk memperbarui QR
             </p>
