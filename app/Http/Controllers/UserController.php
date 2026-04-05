@@ -20,4 +20,9 @@ class UserController extends Controller
     {
         return view('auth/register');
     }
+
+    public function dashboard()
+    {
+        return view('user/index');
+    }
 }

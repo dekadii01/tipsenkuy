@@ -71,7 +71,7 @@
                         </p>
                     </div>
 
-                    <div class="flex-shrink-0 animate-fade-up delay-200">
+                    <div class="shrink-0 animate-fade-up delay-200">
                         <div class="ring-outer w-72 h-72 md:w-80 md:h-80">
                             <div class="ring-inner w-56 h-56 md:w-64 md:h-64 relative">
                                 <svg width="120" height="120" viewBox="0 0 120 120" fill="none"
