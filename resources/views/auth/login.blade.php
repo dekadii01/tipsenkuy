@@ -71,7 +71,7 @@
     </aside>
 
     <main class="panel-right">
-        <div class="form-card">
+        <form action="{{ route('login') }}" method="POST" class="form-card">
 
             <div class="brand mb-8 md:hidden fade-up">
                 <div class="brand-icon brand-icon-dark">
@@ -169,7 +169,7 @@
                 </a>
             </p>
 
-        </div>
+        </form>
     </main>
 
 </x-layout-main>

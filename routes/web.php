@@ -14,3 +14,5 @@ Route::get('/admin/attendance/{id}', [AdminController::class, 'showAttendanceDet
 Route::post('/register', [UserController::class, 'register'])->name('register.post');
 Route::post('/logout', [UserController::class, 'logout'])
     ->name('logout');
+Route::post('/login', [UserController::class, 'login'])
+    ->name('login');
