@@ -68,9 +68,9 @@
 
                         <div class="border-t border-gray-100"></div>
 
-                        <form method="POST" action="">
+                        <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <button type="submit"
+                            <button type="submit" onclick="return confirm('yakin logout?')"
                                 class="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50">
                                 <span>🚪</span> Logout
                             </button>

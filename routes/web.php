@@ -12,3 +12,5 @@ Route::get('/scanqr', [UserController::class, 'showScanQR'])->name('attendance.s
 Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 Route::get('/admin/attendance/{id}', [AdminController::class, 'showAttendanceDetail'])->name('admin.attendance.detail');
 Route::post('/register', [UserController::class, 'register'])->name('register.post');
+Route::post('/logout', [UserController::class, 'logout'])
+    ->name('logout');
