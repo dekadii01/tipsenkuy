@@ -23,7 +23,7 @@ Route::get('/scanqr', [UserController::class, 'showScanQR'])->name('attendance.s
 Route::get('/history', [UserController::class, 'history'])->name('attendance.user.history')->middleware('auth');
 
 // Admin Routes
-Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('dashboard-admin')->middleware('auth');
+Route::get('/admin', [AdminController::class, 'dashboard'])->name('dashboard-admin')->middleware('auth');
 
 // Admin Attendance Routes
 Route::get('/admin/attendance', [AdminController::class, 'attendanceIndex'])->name('admin.attendance.index')->middleware('auth');
