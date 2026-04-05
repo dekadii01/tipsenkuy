@@ -71,7 +71,7 @@
     </aside>
 
     <main class="panel-right">
-        <form action="{{ route('login') }}" method="POST" class="form-card">
+        <div class="form-card">
 
             <div class="brand mb-8 md:hidden fade-up">
                 <div class="brand-icon brand-icon-dark">
@@ -129,7 +129,7 @@
                         placeholder="••••••••" autocomplete="current-password" required>
                 </div>
 
-                <div class="checkbox-wrap fade-up d4 my-3">
+                <div class="checkbox-wrap fade-up d4">
                     <input type="checkbox" id="remember" name="remember">
                     <label for="remember" class="checkbox-label">Keep me signed in</label>
                 </div>
@@ -169,7 +169,7 @@
                 </a>
             </p>
 
-        </form>
+        </div>
     </main>
 
 </x-layout-main>

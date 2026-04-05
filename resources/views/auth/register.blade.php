@@ -1,6 +1,6 @@
 <x-layout-main title="Register" bodyClass="auth-body auth-body--register">
     <main class="panel-left">
-        <form action="{{ route('register') }}" method="POST" class="form-card">
+        <div class="form-card">
 
             <div class="brand brand--mb fade-up">
                 <div class="brand-icon brand-icon-dark">
@@ -88,7 +88,7 @@
                         class="input-field" placeholder="Re-enter password" autocomplete="new-password" required>
                 </div>
 
-                <div class="checkbox-wrap checkbox-wrap--terms fade-up d6 my-3">
+                <div class="checkbox-wrap checkbox-wrap--terms fade-up d6">
                     <input type="checkbox" id="terms" name="terms" required>
                     <label for="terms" class="checkbox-label--terms">
                         I agree to the
@@ -120,7 +120,7 @@
                 </a>
             </p>
 
-        </form>
+        </div>
     </main>
 
     <aside class="panel-right">
