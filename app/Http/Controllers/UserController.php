@@ -25,4 +25,9 @@ class UserController extends Controller
     {
         return view('user/index');
     }
+
+    public function showScanQR()
+    {
+        return view('user/scanqr');
+    }
 }

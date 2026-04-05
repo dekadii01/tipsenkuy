@@ -1,53 +1,5 @@
 <x-layout-main bodyClass="bg-gray-50 text-gray-900 antialiased min-h-screen" title="Dashboard User">
-    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-gray-200">
-        <div class="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between">
-
-            <a href="{{ url('/') }}" class="flex items-center gap-2.5">
-                <div class="w-7 h-7 rounded-lg bg-blue-900 flex items-center justify-center">
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-                        <rect x="1" y="1" width="5" height="5" rx="1" fill="white" />
-                        <rect x="8" y="1" width="5" height="5" rx="1" fill="white" />
-                        <rect x="1" y="8" width="5" height="5" rx="1" fill="white" />
-                        <rect x="8" y="8" width="2" height="2" rx=".5" fill="white" />
-                        <rect x="11" y="8" width="2" height="2" rx=".5" fill="white" />
-                        <rect x="8" y="11" width="2" height="2" rx=".5" fill="white" />
-                        <rect x="11" y="11" width="2" height="2" rx=".5" fill="white" />
-                    </svg>
-                </div>
-                <span class="text-sm font-medium tracking-tight text-gray-900">TipsenKuy</span>
-            </a>
-
-            <div class="flex items-center gap-3">
-
-                <button
-                    class="w-9 h-9 rounded-lg flex items-center justify-center border border-gray-200 text-gray-400 hover:bg-gray-50 transition-colors">
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                        <path d="M8 2a5 5 0 0 0-5 5v2.5L2 11h12l-1-1.5V7a5 5 0 0 0-5-5z" stroke="currentColor"
-                            stroke-width="1.2" stroke-linejoin="round" />
-                        <path d="M6.5 13a1.5 1.5 0 0 0 3 0" stroke="currentColor" stroke-width="1.2" />
-                    </svg>
-                </button>
-
-                <a href="#"
-                    class="flex items-center gap-2 px-2.5 py-1.5 border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-colors no-underline">
-                    <div
-                        class="w-8 h-8 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-xs font-medium text-blue-900 shrink-0 tracking-wide">
-                        {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 2)) }}
-                    </div>
-                    <span class="text-sm font-normal text-gray-800 max-w-30 truncate">
-                        {{ auth()->user()->name ?? 'User' }}
-                    </span>
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"
-                        class="text-gray-400 shrink-0">
-                        <path d="M3 5l3 3 3-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
-                            stroke-linejoin="round" />
-                    </svg>
-                </a>
-
-            </div>
-        </div>
-    </header>
-
+    <x-navbar-auth-user></x-navbar-auth-user>
 
     <main class="max-w-5xl mx-auto px-6 py-10 flex flex-col gap-6">
         <section class="flex items-start justify-between flex-wrap gap-3">
@@ -169,7 +121,7 @@
         <section>
             <div class="grid grid-cols-2 gap-3">
 
-                <a href="#"
+                <a href="{{ route('attendance.scan') }}"
                     class="flex flex-col items-center justify-center gap-2.5 px-4 py-5 bg-blue-900 hover:bg-blue-950 text-white rounded-2xl transition-all duration-200 hover:-translate-y-px no-underline">
                     <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
                         <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
@@ -193,8 +145,7 @@
                     class="flex flex-col items-center justify-center gap-2.5 px-4 py-5 bg-white hover:bg-gray-50 border border-gray-200 hover:border-gray-300 rounded-2xl transition-all duration-200 hover:-translate-y-px no-underline">
                     <div
                         class="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center">
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
-                            class="text-blue-900">
+                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="text-blue-900">
                             <rect x="3" y="2" width="14" height="16" rx="2" stroke="currentColor"
                                 stroke-width="1.4" />
                             <path d="M7 7h6M7 10h6M7 13h4" stroke="currentColor" stroke-width="1.4"
@@ -247,7 +198,6 @@
         <section>
             <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden">
 
-                {{-- Header --}}
                 <div class="px-6 pt-5 pb-4 flex items-center justify-between border-b border-gray-100">
                     <div>
                         <h2 class="text-sm font-medium text-gray-900">Riwayat Terbaru</h2>
