@@ -346,7 +346,7 @@
             {{-- Summary strip --}}
             <div class="grid grid-cols-2 gap-3">
                 <div class="bg-white border border-gray-200 rounded-2xl p-5">
-                    <p class="text-[1.6rem] font-light leading-none tracking-tight text-gray-900">32</p>
+                    <p class="text-[1.6rem] font-light leading-none tracking-tight text-gray-900">{{ $allStudent }}</p>
                     <p class="text-[0.72rem] font-light text-gray-400 mt-2 leading-snug">Total<br>peserta</p>
                     <div class="mt-3 h-[3px] rounded-full bg-gray-100 overflow-hidden">
                         <div class="h-full w-full bg-gray-200 rounded-full"></div>
