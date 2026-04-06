@@ -2,34 +2,33 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Models\ClassSession;
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\Models\ClassSession;
-use Carbon\Carbon;
-
 
 class AdminController extends Controller
 {
     public function dashboard()
     {
         $allStudent = User::where('role', 'user')->count();
+
         return view('admin/index', ['allStudent' => $allStudent]);
     }
 
     public function showAttendanceDetail($id)
     {
-
         // Status badge — swap the @php variable with actual session status:
         // $sessionStatus = 'pending' | 'active' | 'ended'
-
+        $allStudent = User::where('role', 'user')->count();
         $session = ClassSession::findOrFail($id);
-        return view('admin.attendance.detail', compact('session'));
+
+        return view('admin.attendance.detail', compact('session', 'allStudent'));
     }
 
     public function attendanceIndex()
     {
         $sessions = ClassSession::all();
+
         return view('admin.attendance.index', compact('sessions'));
     }
 
@@ -40,7 +39,6 @@ class AdminController extends Controller
 
     public function createAttendance(Request $request)
     {
-
         // Validasi input
         $validated = $request->validate([
             'nama_sesi' => 'required|string|max:255',
