@@ -22,6 +22,7 @@ Route::middleware(['auth', 'user'])->group(function () {
     Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard-user');
     Route::get('/scanqr', [UserController::class, 'showScanQR'])->name('attendance.scan')->middleware('auth');
     Route::get('/history', [UserController::class, 'history'])->name('attendance.user.history')->middleware('auth');
+    Route::get('/sessions', [UserController::class, 'mySessions'])->name('my-sessions')->middleware('auth');
 });
 
 Route::middleware(['auth', 'admin'])->group(function () {

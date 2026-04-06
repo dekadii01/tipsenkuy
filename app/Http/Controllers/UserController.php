@@ -39,4 +39,9 @@ class UserController extends Controller
     {
         return view('user/history');
     }
+
+    public function mySessions()
+    {
+        return view('user/mysessions');
+    }
 }
