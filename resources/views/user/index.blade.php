@@ -141,21 +141,29 @@
                     </div>
                 </a>
 
-                <a href="{{ route('attendance.user.history') }}"
+                <a href=""
                     class="flex flex-col items-center justify-center gap-2.5 px-4 py-5 bg-white hover:bg-gray-50 border border-gray-200 hover:border-gray-300 rounded-2xl transition-all duration-200 hover:-translate-y-px no-underline">
+
                     <div
                         class="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center">
+
                         <svg width="20" height="20" viewBox="0 0 20 20" fill="none" class="text-blue-900">
-                            <rect x="3" y="2" width="14" height="16" rx="2" stroke="currentColor"
+                            <rect x="3" y="4" width="14" height="13" rx="2" stroke="currentColor"
                                 stroke-width="1.4" />
-                            <path d="M7 7h6M7 10h6M7 13h4" stroke="currentColor" stroke-width="1.4"
+                            <path d="M3 7h14" stroke="currentColor" stroke-width="1.4" />
+                            <path d="M7 2v4M13 2v4" stroke="currentColor" stroke-width="1.4"
                                 stroke-linecap="round" />
                         </svg>
+
                     </div>
+
                     <div class="text-center">
-                        <p class="text-sm font-medium text-gray-900">Lihat Riwayat</p>
-                        <p class="text-[0.7rem] font-light text-gray-400 mt-0.5">Semua catatan absen</p>
+                        <p class="text-sm font-medium text-gray-900">Sesi Saya</p>
+                        <p class="text-[0.7rem] font-light text-gray-400 mt-0.5">
+                            Lihat sesi yang tersedia
+                        </p>
                     </div>
+
                 </a>
 
             </div>
@@ -203,8 +211,10 @@
                         <h2 class="text-sm font-medium text-gray-900">Riwayat Terbaru</h2>
                         <p class="text-[0.72rem] font-light text-gray-400 mt-0.5">5 absensi terakhir</p>
                     </div>
-                    <a href="#"
-                        class="flex items-center gap-1 text-[0.75rem] font-normal text-blue-900 hover:opacity-70 transition-opacity no-underline">
+                    <a href="{{ route('attendance.user.history') }}"
+                        class="flex items-center
+                        gap-1 text-[0.75rem] font-normal text-blue-900 hover:opacity-70 transition-opacity
+                        no-underline">
                         Lihat semua
                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
                             <path d="M3 6h6M7 4l2 2-2 2" stroke="currentColor" stroke-width="1.2"
