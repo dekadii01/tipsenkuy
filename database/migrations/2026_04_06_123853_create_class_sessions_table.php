@@ -12,14 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('class_sessions', function (Blueprint $table) {
-        $table->id();
-        $table->string('nama_sesi');
-        $table->text('deskripsi')->nullable();
-        $table->date('tanggal');
-        $table->time('jam_mulai');
-        $table->time('jam_selesai');
-        $table->timestamps();
-});
+            $table->id();
+            $table->string('nama_sesi');
+            $table->text('deskripsi')->nullable();
+            $table->date('tanggal');
+            $table->time('jam_mulai');
+            $table->time('jam_selesai');
+            $table->enum('status', ['pending', 'active', 'ended'])
+                ->default('pending');
+            $table->timestamps();
+        });
     }
 
     /**

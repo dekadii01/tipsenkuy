@@ -13,8 +13,8 @@ class ClassSession extends Model
         'tanggal',
         'jam_mulai',
         'jam_selesai',
+        'status',
     ];
-
 
     public function getStatusAttribute()
     {
@@ -27,5 +27,14 @@ class ClassSession extends Model
         if ($now->between($start, $end)) return 'active';
         return 'ended';
     }
-}
 
+    public function qrs()
+    {
+        return $this->hasMany(QrsSession::class, 'session_id');
+    }
+
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class, 'session_id');
+    }
+}
