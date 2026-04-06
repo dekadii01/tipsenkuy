@@ -31,7 +31,7 @@
 
                 <div class="flex flex-col gap-2">
                     <h1 class="text-2xl font-light tracking-tight text-gray-900">
-                        Kelas <span class="font-medium">Basis Data</span>
+                        Kelas <span class="font-medium">{{ $session['nama_sesi'] }}</span>
                     </h1>
                     <div class="flex flex-wrap items-center gap-3">
                         <div class="flex items-center gap-1.5">
@@ -41,7 +41,7 @@
                                 <path d="M4 1.5v2M8 1.5v2M1.5 5.5h9" stroke="currentColor" stroke-width="1.2"
                                     stroke-linecap="round" />
                             </svg>
-                            <span class="text-xs font-light text-gray-400">Senin, 5 April 2026</span>
+                            <span class="text-xs font-light text-gray-400">{{ $session['tanggal'] }}</span>
                         </div>
                         <span class="text-gray-300 text-xs">·</span>
                         <div class="flex items-center gap-1.5">
@@ -51,7 +51,7 @@
                                 <path d="M6 3.5v2.5l1.5 1.5" stroke="currentColor" stroke-width="1.2"
                                     stroke-linecap="round" />
                             </svg>
-                            <span class="text-xs font-light text-gray-400">08:00 – 10:00 WIB</span>
+                            <span class="text-xs font-light text-gray-400">{{ $session['jam_mulai'] }} – {{ $session['jam_selesai'] }} WIB</span>
                         </div>
                     </div>
                 </div>
@@ -61,21 +61,21 @@
                 <div @class([
                     'flex items-center gap-2 px-3 py-1.5 rounded-xl border text-xs font-light self-start shrink-0',
                     'bg-yellow-50 border-yellow-200 text-yellow-700' =>
-                        $sessionStatus === 'pending',
+                        $session['status'] === 'pending',
                     'bg-green-50  border-green-200  text-green-700' =>
-                        $sessionStatus === 'active',
+                        $session['status'] === 'active',
                     'bg-gray-100  border-gray-200   text-gray-500' =>
-                        $sessionStatus === 'ended',
+                        $session['status'] === 'ended',
                 ])>
                     <span @class([
                         'w-1.5 h-1.5 rounded-full',
-                        'bg-yellow-400' => $sessionStatus === 'pending',
-                        'bg-green-500 animate-pulse' => $sessionStatus === 'active',
-                        'bg-gray-400' => $sessionStatus === 'ended',
+                        'bg-yellow-400' => $session['status'] === 'pending',
+                        'bg-green-500 animate-pulse' => $session['status'] === 'active',
+                        'bg-gray-400' => $session['status'] === 'ended',
                     ])></span>
-                    @if ($sessionStatus === 'pending')
+                    @if ($session['status'] === 'pending')
                         Menunggu
-                    @elseif ($sessionStatus === 'active')
+                    @elseif ($session['status'] === 'active')
                         Sesi Aktif
                     @else
                         Sesi Berakhir
@@ -98,7 +98,7 @@
                         {{-- ── SECTION LABEL ── --}}
                         <div class="flex items-center justify-between">
                             <h2 class="text-sm font-medium text-gray-900">QR Code Sesi</h2>
-                            @if ($sessionStatus === 'active')
+                            @if ($session['status'] === 'active')
                                 <div class="flex items-center gap-1.5 text-[0.7rem] font-light text-green-600">
                                     <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
                                         <circle cx="6" cy="6" r="4.5" stroke="currentColor"
@@ -114,7 +114,7 @@
                         {{-- ── A. QR DISPLAY AREA ── --}}
 
                         {{-- STATE: QR Active --}}
-                        @if ($sessionStatus === 'active')
+                        @if ($session['status'] === 'active')
                             <div class="flex flex-col items-center gap-4">
                                 <div class="p-5 border border-gray-200 rounded-2xl bg-white">
                                     <svg width="200" height="200" viewBox="0 0 120 120" fill="none"
@@ -281,7 +281,7 @@
                                 {{-- ── C. ACTION BUTTONS ── --}}
                                 <div class="flex flex-col gap-2.5 mt-4">
 
-                                    @if ($sessionStatus === 'active')
+                                    @if ($session['status'] === 'active')
                                         <button type="submit"
                                             class="w-full flex items-center justify-center gap-2 py-2.5 border border-gray-200 hover:bg-gray-50 hover:border-gray-300 text-sm font-light text-gray-700 rounded-xl transition-all duration-200 hover:-translate-y-px">
                                             <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
@@ -312,7 +312,7 @@
                             </form>
 
                             {{-- End session — separate form to avoid CSRF collision --}}
-                            @if ($sessionStatus !== 'ended')
+                            @if ($session['status'] !== 'ended')
                                 <form method="POST" action="">
                                     @csrf
                                     @method('PATCH')
@@ -371,7 +371,7 @@
                         <h2 class="text-sm font-medium text-gray-900">Peserta Hadir</h2>
                         <p class="text-[0.72rem] font-light text-gray-400 mt-0.5">12 orang tercatat</p>
                     </div>
-                    @if ($sessionStatus === 'active')
+                    @if ($session['status'] === 'active')
                         <span
                             class="text-[0.65rem] font-light tracking-widest uppercase text-blue-800 bg-blue-50 border border-blue-200 rounded-full px-2.5 py-1">
                             Live

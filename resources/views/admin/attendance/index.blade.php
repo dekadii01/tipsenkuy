@@ -58,72 +58,7 @@
                 Menampilkan <span class="font-medium text-gray-600">8</span> sesi
             </p>
 
-            @foreach ([
-        [
-            'name' => 'Kelas Basis Data',
-            'date' => 'Senin, 5 April 2026',
-            'time' => '08:00 – 10:00',
-            'status' => 'active',
-            'present' => 28,
-            'total' => 32,
-        ],
-        [
-            'name' => 'Praktikum Jaringan',
-            'date' => 'Senin, 5 April 2026',
-            'time' => '09:00 – 11:00',
-            'status' => 'active',
-            'present' => 24,
-            'total' => 24,
-        ],
-        [
-            'name' => 'Kelas Algoritma',
-            'date' => 'Senin, 5 April 2026',
-            'time' => '10:00 – 12:00',
-            'status' => 'active',
-            'present' => 19,
-            'total' => 30,
-        ],
-        [
-            'name' => 'Seminar Keamanan Siber',
-            'date' => 'Senin, 5 April 2026',
-            'time' => '13:00 – 15:00',
-            'status' => 'pending',
-            'present' => 0,
-            'total' => 45,
-        ],
-        [
-            'name' => 'Workshop UI/UX',
-            'date' => 'Senin, 5 April 2026',
-            'time' => '13:00 – 15:00',
-            'status' => 'pending',
-            'present' => 0,
-            'total' => 20,
-        ],
-        [
-            'name' => 'Kelas Pemrograman Web',
-            'date' => 'Minggu, 4 April 2026',
-            'time' => '08:00 – 10:00',
-            'status' => 'ended',
-            'present' => 29,
-            'total' => 30,
-        ],
-        [
-            'name' => 'Praktikum Basis Data',
-            'date' => 'Sabtu, 3 April 2026',
-            'time' => '10:00 – 12:00',
-            'status' => 'ended',
-            'present' => 22,
-            'total' => 25,
-        ],
-        [
-            'name' => 'Kelas Struktur Data',
-            'date' => 'Jumat, 2 April 2026',
-            'time' => '08:00 – 09:40',
-            'status' => 'ended',
-            'present' => 18,
-            'total' => 28,
-        ],
-    ] as $session)
+            @foreach ($sessions as $session)
                 <div
                     class="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-gray-300 transition-colors">
                     <div class="flex">
@@ -140,7 +75,7 @@
                             <div class="flex-1 min-w-0 flex flex-col gap-1.5">
 
                                 <div class="flex items-center gap-2.5 flex-wrap">
-                                    <p class="text-sm font-medium text-gray-900">{{ $session['name'] }}</p>
+                                    <p class="text-sm font-medium text-gray-900">{{ $session['nama_sesi'] }}</p>
 
                                     <div @class([
                                         'flex items-center gap-1.5 px-2 py-0.5 rounded-full border text-[0.65rem] font-light',
@@ -177,7 +112,7 @@
                                                 stroke-width="1.2" stroke-linecap="round" />
                                         </svg>
                                         <span
-                                            class="text-[0.72rem] font-light text-gray-400">{{ $session['date'] }}</span>
+                                            class="text-[0.72rem] font-light text-gray-400">{{ $session['tanggal'] }}</span>
                                     </div>
                                     <div class="flex items-center gap-1">
                                         <svg width="10" height="10" viewBox="0 0 12 12" fill="none"
@@ -187,7 +122,7 @@
                                             <path d="M6 3.5v2.5l1.5 1.5" stroke="currentColor" stroke-width="1.2"
                                                 stroke-linecap="round" />
                                         </svg>
-                                        <span class="text-[0.72rem] font-light text-gray-400">{{ $session['time'] }}
+                                        <span class="text-[0.72rem] font-light text-gray-400">{{ $session['jam_mulai'] }}
                                             WIB</span>
                                     </div>
                                     <div class="flex items-center gap-1">
@@ -246,7 +181,7 @@
                                     </form>
                                 @endif
 
-                                <a href="{{ route('admin.attendance.detail', 1) }}"
+                                <a href="{{ route('admin.attendance.detail', $session['id']) }}"
                                     class="flex items-center justify-center gap-1.5 px-4 py-2 border border-gray-200 hover:bg-gray-50 hover:border-gray-300 text-xs font-light text-gray-600 rounded-xl transition-all duration-200 no-underline">
                                     Detail
                                     <svg width="11" height="11" viewBox="0 0 12 12" fill="none">
