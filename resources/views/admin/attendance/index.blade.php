@@ -122,7 +122,8 @@
                                             <path d="M6 3.5v2.5l1.5 1.5" stroke="currentColor" stroke-width="1.2"
                                                 stroke-linecap="round" />
                                         </svg>
-                                        <span class="text-[0.72rem] font-light text-gray-400">{{ $session['jam_mulai'] }}
+                                        <span
+                                            class="text-[0.72rem] font-light text-gray-400">{{ $session['jam_mulai'] }}
                                             WIB</span>
                                     </div>
                                     <div class="flex items-center gap-1">

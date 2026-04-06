@@ -87,27 +87,39 @@
                             <div class="flex">
                                 <div @class([
                                     'w-[3px] shrink-0 rounded-l-2xl',
-                                    'bg-blue-900' => $active,
-                                    'bg-gray-200' => !$active,
+                                    'bg-blue-900' => $session->status,
+                                    'bg-gray-200' => !$session->status,
                                 ])></div>
 
                                 <div class="flex-1 px-5 py-4 flex items-center gap-4 flex-wrap">
 
                                     <div class="flex-1 min-w-0">
                                         <div class="flex items-center gap-2 flex-wrap">
-                                            <p class="text-sm font-medium text-gray-900 truncate">{{ $session->name }}
+                                            <p class="text-sm font-medium text-gray-900 truncate">
+                                                {{ $session->nama_sesi }}</p>
                                             </p>
                                             <div @class([
                                                 'flex items-center gap-1.5 text-[0.65rem] font-light px-2 py-0.5 rounded-full border',
-                                                'bg-green-50 border-green-200 text-green-700' => $active,
-                                                'bg-gray-100 border-gray-200 text-gray-400' => !$active,
+                                                'bg-green-50 border-green-200 text-green-700' =>
+                                                    $session->status === 'active',
+                                                'bg-gray-100 border-gray-200 text-gray-400' => $session->status === 'ended',
+                                                'bg-yellow-50 border-yellow-200 text-yellow-700' =>
+                                                    $session->status === 'pending',
                                             ])>
                                                 <span @class([
                                                     'w-1 h-1 rounded-full',
-                                                    'bg-green-500 animate-pulse' => $active,
-                                                    'bg-gray-400' => !$active,
+                                                    'bg-green-500 animate-pulse' => $session->status === 'active',
+                                                    'bg-gray-400' => $session->status === 'ended',
+                                                    'bg-yellow-300' => $session->status === 'pending',
                                                 ])></span>
-                                                {{ $active ? 'Aktif' : 'Belum mulai' }}
+
+                                                @if ($session->status === 'active')
+                                                    · Sedang berlangsung
+                                                @elseif ($session->status === 'pending')
+                                                    · Menunggu mulai
+                                                @else
+                                                    · Sesi berakhir
+                                                @endif
                                             </div>
                                         </div>
                                         <div class="flex items-center gap-3 mt-1.5">
@@ -120,7 +132,7 @@
                                                         stroke-width="1.2" stroke-linecap="round" />
                                                 </svg>
                                                 <span
-                                                    class="text-[0.7rem] font-light text-gray-400">{{ $time }}</span>
+                                                    class="text-[0.7rem] font-light text-gray-400">{{ $session->jam_mulai }}</span>
                                             </div>
                                             <div class="flex items-center gap-1">
                                                 <svg width="10" height="10" viewBox="0 0 12 12" fill="none"
@@ -130,7 +142,7 @@
                                                     <path d="M2 10c0-2.21 1.79-4 4-4s4 1.79 4 4" stroke="currentColor"
                                                         stroke-width="1.2" stroke-linecap="round" />
                                                 </svg>
-                                                <span class="text-[0.7rem] font-light text-gray-400">{{ $total }}
+                                                <span class="text-[0.7rem] font-light text-gray-400">{{ $allStudent }}
                                                     peserta</span>
                                             </div>
                                         </div>
@@ -139,7 +151,7 @@
                                     <div class="flex flex-col items-end gap-1.5 shrink-0">
                                         <p class="text-sm font-light text-gray-900">
                                             <span class="font-medium">{{ $present }}</span>
-                                            <span class="text-gray-400">/ {{ $total }}</span>
+                                            <span class="text-gray-400">/ {{ $allStudent }}</span>
                                         </p>
                                         <div class="w-24 h-[3px] rounded-full bg-gray-100 overflow-hidden">
                                             <div @class([
@@ -147,11 +159,11 @@
                                                 'bg-blue-900' => $active,
                                                 'bg-gray-300' => !$active,
                                             ])
-                                                style="width: {{ $total > 0 ? round(($present / $total) * 100) : 0 }}%">
+                                                style="width: {{ $allStudent > 0 ? round(($present / $allStudent) * 100) : 0 }}%">
                                             </div>
                                         </div>
                                         <span class="text-[0.65rem] font-light text-gray-400">
-                                            {{ $total > 0 ? round(($present / $total) * 100) : 0 }}% hadir
+                                            {{ $allStudent > 0 ? round(($present / $allStudent) * 100) : 0 }}% hadir
                                         </span>
                                     </div>
 
