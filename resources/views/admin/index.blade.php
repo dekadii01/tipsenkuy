@@ -80,7 +80,7 @@
 
                 <div class="flex flex-col gap-3">
 
-                    @foreach ([['Kelas Basis Data', '08:00 – 10:00', 32, 28, true, 'TKN-8F3A'], ['Praktikum Jaringan', '09:00 – 11:00', 24, 24, true, 'TKN-2C1D'], ['Kelas Algoritma', '10:00 – 12:00', 30, 19, true, 'TKN-9E4B'], ['Seminar Keamanan Siber', '13:00 – 15:00', 45, 0, false, 'TKN-7A2F'], ['Workshop UI/UX', '13:00 – 15:00', 20, 0, false, 'TKN-3D8C']] as [$name, $time, $total, $present, $active, $token])
+                    @foreach ($sessions as $session)
                         <div
                             class="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-gray-300 transition-colors">
 
@@ -95,7 +95,7 @@
 
                                     <div class="flex-1 min-w-0">
                                         <div class="flex items-center gap-2 flex-wrap">
-                                            <p class="text-sm font-medium text-gray-900 truncate">{{ $name }}
+                                            <p class="text-sm font-medium text-gray-900 truncate">{{ $session->name }}
                                             </p>
                                             <div @class([
                                                 'flex items-center gap-1.5 text-[0.65rem] font-light px-2 py-0.5 rounded-full border',

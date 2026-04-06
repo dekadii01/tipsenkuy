@@ -11,8 +11,9 @@ class AdminController extends Controller
     public function dashboard()
     {
         $allStudent = User::where('role', 'user')->count();
+        $sessions = ClassSession::all();
 
-        return view('admin/index', ['allStudent' => $allStudent]);
+        return view('admin/index', ['allStudent' => $allStudent, 'sessions' => $sessions]);
     }
 
     public function showAttendanceDetail($id)
