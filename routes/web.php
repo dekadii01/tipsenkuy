@@ -17,16 +17,18 @@ Route::post('/login', [AuthController::class, 'login'])
     ->name('login');
 
 // Protected Routes
-// User Routes
-Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard-user')->middleware('auth');
-Route::get('/scanqr', [UserController::class, 'showScanQR'])->name('attendance.scan')->middleware('auth');
-Route::get('/history', [UserController::class, 'history'])->name('attendance.user.history')->middleware('auth');
+Route::middleware(['auth', 'user'])->group(function () {
+    // User Routes
+    Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard-user');
+    Route::get('/scanqr', [UserController::class, 'showScanQR'])->name('attendance.scan')->middleware('auth');
+    Route::get('/history', [UserController::class, 'history'])->name('attendance.user.history')->middleware('auth');
+    Route::get('/sessions', [UserController::class, 'mySessions'])->name('my-sessions')->middleware('auth');
+});
 
-// Admin Routes
-Route::get('/admin', [AdminController::class, 'dashboard'])->name('dashboard-admin')->middleware('auth');
-
-// Admin Attendance Routes
-Route::get('/admin/attendance', [AdminController::class, 'attendanceIndex'])->name('admin.attendance.index')->middleware('auth');
-Route::get('/admin/attendance/{id}', [AdminController::class, 'showAttendanceDetail'])->name('admin.attendance.detail')->middleware('auth');
-Route::get('/admin/create-attendance', [AdminController::class, 'showCreateAttendance'])->name('admin.attendance.create')->middleware('auth');
-Route::post('/admin/create-attendance', [AdminController::class, 'createAttendance'])->name('admin.attendance.store')->middleware('auth');
+Route::middleware(['auth', 'admin'])->group(function () {
+    // Admin Routes
+    Route::get('/admin', [AdminController::class, 'dashboard'])->name('dashboard-admin');
+    Route::get('/admin/attendance', [AdminController::class, 'attendanceIndex'])->name('admin.attendance.index')->middleware('auth');
+    Route::get('/admin/attendance/{id}', [AdminController::class, 'showAttendanceDetail'])->name('admin.attendance.detail')->middleware('auth');
+    Route::get('/admin/create-attendance', [AdminController::class, 'showCreateAttendance'])->name('admin.attendance.create')->middleware('auth');
+});
