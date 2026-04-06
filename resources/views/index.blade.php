@@ -29,7 +29,107 @@
 
             <nav class="flex items-center gap-3">
 
-                <a href="{{ route('login') }}" class="px-5 py-2 rounded-lg btn-primary">Login</a>
+                @auth
+                    @if (auth()->user()->role === 'admin')
+                        <div x-data="{ open: false }" class="relative">
+
+                            <button @click="open = !open"
+                                class="flex items-center gap-2 px-2.5 py-1.5 border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-colors">
+
+                                <div
+                                    class="w-8 h-8 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-xs font-medium text-blue-900">
+                                    {{ strtoupper(substr(auth()->user()->name ?? 'A', 0, 2)) }}
+                                </div>
+
+                                <span class="text-sm font-normal text-gray-800 max-w-32 truncate">
+                                    {{ auth()->user()->name ?? 'Admin' }}
+                                </span>
+
+                                <svg width="12" height="12" viewBox="0 0 12 12"
+                                    class="text-gray-400 transition-transform" :class="{ 'rotate-180': open }">
+                                    <path d="M3 5l3 3 3-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </button>
+
+                            <div x-show="open" @click.outside="open = false" x-transition
+                                class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden z-50">
+                                <a href="{{ route('dashboard-admin') }}"
+                                    class="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50">
+                                    📊 Dashboard
+                                </a>
+                                <a href=""
+                                    class="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50">
+                                    👤 Profile
+                                </a>
+
+                                <div class="border-t border-gray-100"></div>
+
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" onclick="return confirm('Yakin logout?')"
+                                        class="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50">
+                                        🚪 Logout
+                                    </button>
+                                </form>
+
+                            </div>
+
+                        </div>
+                    @else
+                        <div x-data="{ open: false }" class="relative">
+
+                            <button @click="open = !open"
+                                class="flex items-center gap-2 px-2.5 py-1.5 border border-gray-200 rounded-xl hover:bg-gray-50 hover:border-gray-300 transition-colors">
+
+                                <div
+                                    class="w-8 h-8 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-xs font-medium text-blue-900">
+                                    {{ strtoupper(substr(auth()->user()->first_name ?? 'A', 0, 2)) }}
+                                </div>
+
+                                <span class="text-sm font-normal text-gray-800 max-w-32 truncate">
+                                    {{ auth()->user()->first_name ?? 'Admin' }}
+                                </span>
+
+                                <svg width="12" height="12" viewBox="0 0 12 12"
+                                    class="text-gray-400 transition-transform" :class="{ 'rotate-180': open }">
+                                    <path d="M3 5l3 3 3-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
+                                        stroke-linejoin="round" />
+                                </svg>
+                            </button>
+
+                            <div x-show="open" @click.outside="open = false" x-transition
+                                class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden z-50">
+                                <a href="{{ route('dashboard-user') }}"
+                                    class="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50">
+                                    📊 Dashboard
+                                </a>
+                                <a href=""
+                                    class="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50">
+                                    👤 Profile
+                                </a>
+
+                                <div class="border-t border-gray-100"></div>
+
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" onclick="return confirm('Yakin logout?')"
+                                        class="w-full flex items-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50">
+                                        🚪 Logout
+                                    </button>
+                                </form>
+
+                            </div>
+
+                        </div>
+                    @endif
+                @else
+                    <a href="{{ route('login') }}"
+                        class="px-4 py-2 rounded-lg text-sm font-light text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-colors">Login</a>
+                    <a href="#"
+                        class="px-4 py-2 rounded-lg bg-accent text-white text-sm font-light hover:bg-accent-hover transition-colors">Sign
+                        Up</a>
+                @endauth
             </nav>
 
         </div>
@@ -86,10 +186,14 @@
                                 <svg width="120" height="120" viewBox="0 0 120 120" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <rect x="8" y="8" width="34" height="34" rx="4" fill="#0f4c81" />
-                                    <rect x="14" y="14" width="22" height="22" rx="2" fill="white" />
-                                    <rect x="20" y="20" width="10" height="10" rx="1" fill="#0f4c81" />
-                                    <rect x="78" y="8" width="34" height="34" rx="4" fill="#0f4c81" />
-                                    <rect x="84" y="14" width="22" height="22" rx="2" fill="white" />
+                                    <rect x="14" y="14" width="22" height="22" rx="2"
+                                        fill="white" />
+                                    <rect x="20" y="20" width="10" height="10" rx="1"
+                                        fill="#0f4c81" />
+                                    <rect x="78" y="8" width="34" height="34" rx="4"
+                                        fill="#0f4c81" />
+                                    <rect x="84" y="14" width="22" height="22" rx="2"
+                                        fill="white" />
                                     <rect x="90" y="20" width="10" height="10" rx="1"
                                         fill="#0f4c81" />
                                     <rect x="8" y="78" width="34" height="34" rx="4"
