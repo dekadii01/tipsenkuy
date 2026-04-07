@@ -167,7 +167,7 @@
                                         </span>
                                     </div>
 
-                                    <a href="{{ route('admin.attendance.detail', 1) }}"
+                                    <a href="{{ route('admin.attendance.detail', $session->id) }}"
                                         class="flex items-center gap-1 text-[0.75rem] font-normal text-blue-900 hover:opacity-70 transition-opacity no-underline shrink-0">
                                         Detail
                                         <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
