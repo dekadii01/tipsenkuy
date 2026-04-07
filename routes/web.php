@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ScanQrController;
 use App\Http\Controllers\SessionQrController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
@@ -22,6 +23,8 @@ Route::middleware(['auth', 'user'])->group(function () {
     // User Routes
     Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard-user');
     Route::get('/scanqr', [UserController::class, 'showScanQR'])->name('attendance.scan')->middleware('auth');
+    Route::get('/scan', [ScanQrController::class, 'show'])->name('scan.show');
+    Route::post('/scan', [ScanQrController::class, 'process'])->name('scan.process');
     Route::get('/history', [UserController::class, 'history'])->name('attendance.user.history')->middleware('auth');
     Route::get('/sessions', [UserController::class, 'mySessions'])->name('my-sessions')->middleware('auth');
 });

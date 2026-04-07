@@ -356,11 +356,11 @@
                         ])>
                             <div
                                 class="w-8 h-8 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-[0.65rem] font-medium text-blue-900 shrink-0 tracking-wide">
-                                {{ strtoupper(substr($record->student->name ?? 'XX', 0, 2)) }}
+                                {{ strtoupper(substr($record->user->first_name ?? 'XX', 0, 2)) }}
                             </div>
                             <div class="flex-1 min-w-0">
                                 <p class="text-sm font-normal text-gray-800 truncate">
-                                    {{ $record->student->name ?? '-' }}
+                                    {{ $record->user->first_name . ' ' . $record->user->last_name ?? '-' }}
                                 </p>
                             </div>
                             <div class="flex items-center gap-2 shrink-0">

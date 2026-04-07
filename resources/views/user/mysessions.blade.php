@@ -31,19 +31,15 @@
                     @foreach ($activeSessions as $session)
                         <div @class([
                             'bg-white border rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center gap-4 transition-colors',
-                            'border-green-200 hover:border-green-300' => !in_array(
-                                $session->id,
-                                $attended),
-                            'border-gray-200  hover:border-gray-300' => in_array(
-                                $session->id,
-                                $attended),
+                            'border-green-200 hover:border-green-300' => isset($attended[$session->id]),
+                            'border-gray-200  hover:border-gray-300' => !isset($attended[$session->id]),
                         ])>
 
                             <div class="shrink-0 self-start sm:self-center">
                                 <div @class([
                                     'w-2 h-2 rounded-full mt-1.5',
-                                    'bg-green-500 animate-pulse' => !$scanned,
-                                    'bg-gray-300' => $scanned,
+                                    'bg-green-500 animate-pulse' => !isset($attended[$session->id]),
+                                    'bg-gray-300' => isset($attended[$session->id]),
                                 ])></div>
                             </div>
 
@@ -59,7 +55,7 @@
                                                 stroke-width="1.2" stroke-linecap="round" />
                                         </svg>
                                         <span
-                                            class="text-[0.7rem] font-light text-gray-400">{{ $session->tanggal }}</span>
+                                            class="text-[0.7rem] font-light text-gray-400">{{ $session->tanggal->translatedFormat('d F Y') }}</span>
                                     </div>
                                     <div class="flex items-center gap-1">
                                         <svg width="10" height="10" viewBox="0 0 12 12" fill="none"
@@ -77,7 +73,7 @@
 
                             <div class="flex sm:flex-col items-center sm:items-end gap-3 shrink-0">
 
-                                @if (in_array($session->id, $attended))
+                                @if (isset($attended[$session->id]))
                                     <span
                                         class="text-[0.65rem] font-light tracking-widest uppercase px-2.5 py-1 rounded-full bg-green-50 border border-green-200 text-green-700">
                                         Sudah hadir
@@ -149,7 +145,8 @@
                                         <path d="M4 1.5v2M8 1.5v2M1.5 5.5h9" stroke="currentColor" stroke-width="1.2"
                                             stroke-linecap="round" />
                                     </svg>
-                                    <span class="text-[0.7rem] font-light text-gray-400">{{ $session->tanggal }}</span>
+                                    <span
+                                        class="text-[0.7rem] font-light text-gray-400">{{ $session->tanggal->translatedFormat('d F Y') }}</span>
                                 </div>
                                 <div class="flex items-center gap-1">
                                     <svg width="10" height="10" viewBox="0 0 12 12" fill="none"
@@ -232,7 +229,7 @@
                         </div>
 
                         <div class="flex items-center gap-2.5 shrink-0">
-                            @if ($attended)
+                            @if (isset($attended[$session->id]))
                                 <span
                                     class="text-[0.65rem] font-light tracking-widest uppercase px-2.5 py-1 rounded-full bg-green-50 border border-green-200 text-green-600">
                                     Hadir
