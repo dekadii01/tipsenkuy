@@ -175,11 +175,10 @@
 
                 <div class="bg-white border border-gray-200 rounded-2xl p-5">
                     <p class="text-[1.8rem] font-light leading-none tracking-tight text-gray-900">
-                        {{ count($attendedSessions) }}</p>
+                        {{ $presentCount }}</p>
                     <p class="text-[0.72rem] font-light text-gray-400 mt-2 leading-snug">Hari hadir<br>bulan ini</p>
                     <div class="mt-3 h-0.75 rounded-full bg-gray-100 overflow-hidden">
-                        <div
-                            class="h-full w-[{{ min(100, (count($attendedSessions) / 30) * 100) }}%] bg-green-500 rounded-full">
+                        <div class="h-full w-[{{ min(100, ($presentCount / 30) * 100) }}%] bg-green-500 rounded-full">
                         </div>
                     </div>
                 </div>
@@ -196,11 +195,11 @@
 
                 <div class="bg-white border border-gray-200 rounded-2xl p-5">
                     <p class="text-[1.8rem] font-light leading-none tracking-tight text-gray-900">
-                        96<span class="text-base text-gray-400">%</span>
+                        {{ $attendanceRate }}<span class="text-base text-gray-400">%</span>
                     </p>
                     <p class="text-[0.72rem] font-light text-gray-400 mt-2 leading-snug">Tingkat<br>kehadiran</p>
                     <div class="mt-3 h-0.75 rounded-full bg-gray-100 overflow-hidden">
-                        <div class="h-full w-[96%] bg-green-500 rounded-full"></div>
+                        <div class="h-full w-[{{ $attendanceRate }}%] bg-green-500 rounded-full"></div>
                     </div>
                 </div>
 
@@ -214,7 +213,8 @@
                 <div class="px-6 pt-5 pb-4 flex items-center justify-between border-b border-gray-100">
                     <div>
                         <h2 class="text-sm font-medium text-gray-900">Riwayat Terbaru</h2>
-                        <p class="text-[0.72rem] font-light text-gray-400 mt-0.5">5 absensi terakhir</p>
+                        <p class="text-[0.72rem] font-light text-gray-400 mt-0.5">{{ $history->count() }} absensi
+                            terakhir</p>
                     </div>
                     <a href="{{ route('attendance.user.history') }}"
                         class="flex items-center
@@ -229,7 +229,7 @@
                 </div>
 
                 <div class="px-6">
-                    @foreach ([['Sesi Pagi — Kelas A', 'Senin, 5 April 2026', '08:42', true], ['Sesi Siang — Kelas A', 'Jumat, 4 April 2026', '13:05', true], ['Sesi Pagi — Workshop', 'Kamis, 3 April 2026', '—', false], ['Sesi Pagi — Kelas A', 'Rabu, 2 April 2026', '08:55', true], ['Sesi Siang — Kelas B', 'Selasa, 1 April 2026', '12:58', true]] as [$session, $date, $time, $present])
+                    @foreach ($history as $record)
                         <div @class([
                             'flex items-center gap-3.5 py-3.5',
                             'border-b border-gray-100' => !$loop->last,
@@ -237,39 +237,60 @@
 
                             <div @class([
                                 'w-9 h-9 rounded-xl border flex items-center justify-center shrink-0',
-                                'bg-gray-50 border-gray-200' => $present,
-                                'bg-red-50  border-red-200' => !$present,
+                                'bg-green-50 border-green-200' => $record->status === 'present',
+                                'bg-red-50 border-red-200' => $record->status === 'absent',
+                                'bg-yellow-50 border-yellow-200' => in_array($record->status, [
+                                    'sick',
+                                    'permit',
+                                ]),
                             ])>
-                                @if ($present)
+
+                                @if ($record->status === 'present')
                                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
-                                        class="text-blue-900">
+                                        class="text-green-600">
                                         <path d="M4 8l3 3 5-5" stroke="currentColor" stroke-width="1.4"
                                             stroke-linecap="round" stroke-linejoin="round" />
                                     </svg>
-                                @else
+                                @elseif ($record->status === 'absent')
                                     <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
                                         class="text-red-500">
                                         <path d="M5 5l6 6M11 5l-6 6" stroke="currentColor" stroke-width="1.4"
                                             stroke-linecap="round" />
                                     </svg>
+                                @else
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
+                                        class="text-yellow-600">
+                                        <circle cx="8" cy="8" r="5" stroke="currentColor"
+                                            stroke-width="1.4" />
+                                    </svg>
                                 @endif
+
                             </div>
 
                             <div class="flex-1 min-w-0">
-                                <p class="text-sm font-normal text-gray-800 truncate">{{ $session }}</p>
-                                <p class="text-[0.72rem] font-light text-gray-400 mt-0.5">{{ $date }}</p>
+                                <p class="text-sm font-normal text-gray-800 truncate">
+                                    {{ $record->session->nama_sesi }}
+                                </p>
+                                <p class="text-[0.72rem] font-light text-gray-400 mt-0.5">
+                                    {{ $record->session->tanggal->translatedFormat('d F Y') }}
+                                </p>
                             </div>
 
                             <div class="text-right shrink-0">
                                 <span class="text-[0.72rem] font-light text-gray-400">
-                                    {{ $time }}
+                                    {{ $record->session->jam_mulai }} – {{ $record->session->jam_selesai }}
                                 </span>
+
                                 <div @class([
                                     'text-[0.6rem] font-light tracking-widest uppercase px-2 py-0.5 rounded-full mt-1 border text-center',
-                                    'bg-green-50 border-green-200 text-green-700' => $present,
-                                    'bg-red-50   border-red-200   text-red-600' => !$present,
+                                    'bg-green-50 border-green-200 text-green-700' =>
+                                        $record->status === 'present',
+                                    'bg-red-50 border-red-200 text-red-600' => $record->status === 'absent',
+                                    'bg-yellow-50 border-yellow-200 text-yellow-700' => in_array(
+                                        $record->status,
+                                        ['sick', 'permit']),
                                 ])>
-                                    {{ $present ? 'HADIR' : 'ABSEN' }}
+                                    {{ strtoupper($record->status) }}
                                 </div>
                             </div>
 
