@@ -32,7 +32,8 @@ class UserController extends Controller
     public function dashboard()
     {
         $sessionTotal = Attendance::where('user_id', Auth::id())->count();
-        return view('user/index', compact('sessionTotal'));
+        $attendedSessions = Attendance::where('user_id', Auth::id())->pluck('session_id')->toArray();
+        return view('user/index', compact('sessionTotal', 'attendedSessions'));
     }
 
     public function showScanQR()
