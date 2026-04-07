@@ -174,18 +174,23 @@
             <div class="grid grid-cols-3 gap-3">
 
                 <div class="bg-white border border-gray-200 rounded-2xl p-5">
-                    <p class="text-[1.8rem] font-light leading-none tracking-tight text-gray-900">18</p>
+                    <p class="text-[1.8rem] font-light leading-none tracking-tight text-gray-900">
+                        {{ count($attendedSessions) }}</p>
                     <p class="text-[0.72rem] font-light text-gray-400 mt-2 leading-snug">Hari hadir<br>bulan ini</p>
                     <div class="mt-3 h-0.75 rounded-full bg-gray-100 overflow-hidden">
-                        <div class="h-full w-3/4 bg-blue-900 rounded-full"></div>
+                        <div
+                            class="h-full w-[{{ min(100, (count($attendedSessions) / 30) * 100) }}%] bg-green-500 rounded-full">
+                        </div>
                     </div>
                 </div>
 
                 <div class="bg-white border border-gray-200 rounded-2xl p-5">
-                    <p class="text-[1.8rem] font-light leading-none tracking-tight text-gray-900">24</p>
+                    <p class="text-[1.8rem] font-light leading-none tracking-tight text-gray-900">{{ $sessionTotal }}
+                    </p>
                     <p class="text-[0.72rem] font-light text-gray-400 mt-2 leading-snug">Total sesi<br>diikuti</p>
                     <div class="mt-3 h-0.75 rounded-full bg-gray-100 overflow-hidden">
-                        <div class="h-full w-[60%] bg-blue-200 rounded-full"></div>
+                        <div class="h-full w-[{{ min(100, ($sessionTotal / 30) * 100) }}%] bg-blue-500 rounded-full">
+                        </div>
                     </div>
                 </div>
 
