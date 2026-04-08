@@ -37,6 +37,24 @@ class AdminController extends Controller
         return back()->with('success', 'Sesi berhasil diakhiri.');
     }
 
+    public function startSession(ClassSession $session)
+    {
+        if ($session->status === 'active') {
+            return back()->withErrors(['message' => 'Sesi sudah aktif.']);
+        }
+
+        $session->update(['status' => 'active']);
+
+        // update qr session yang sudah tidak aktif menjadi aktif
+        QrsSession::where('session_id', $session->id)
+            ->where('is_active', false)
+            ->update(['is_active' => true]);
+
+        $session->update(['started_at' => now()]);
+
+        return back()->with('success', 'Sesi berhasil dimulai.');
+    }
+
     public function showAttendanceDetail($id)
     {
         $session = ClassSession::findOrFail($id);
@@ -50,7 +68,7 @@ class AdminController extends Controller
         $qrSvg = null;
 
         if ($activeQr) {
-            $qrUrl = url('/scan?token=' . $activeQr->token);
+            $qrUrl = url('/scan?token='.$activeQr->token);
             $qrSvg = QrCode::size(220)->generate($qrUrl);
         }
 

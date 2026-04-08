@@ -156,7 +156,7 @@
                             <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 shrink-0">
 
                                 @if ($session['status'] === 'pending')
-                                    <form method="POST" action="">
+                                    <form method="POST" action="{{ route('admin.sessions.start', $session['id']) }}">
                                         @csrf
                                         @method('PATCH')
                                         <button type="submit"
@@ -168,7 +168,7 @@
                                         </button>
                                     </form>
                                 @elseif ($session['status'] === 'active')
-                                    <form method="POST">
+                                    <form method="POST" action="{{ route('admin.sessions.end', $session['id']) }}">
                                         @csrf
                                         @method('PATCH')
                                         <button type="submit"
