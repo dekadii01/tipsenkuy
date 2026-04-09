@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Attendance;
 use App\Models\ClassSession;
 use App\Models\QrsSession;
 use App\Models\User;
@@ -17,8 +18,12 @@ class AdminController extends Controller
         $sessions = ClassSession::all();
         $active = true;
         $present = 0;
+        $recentScans = Attendance::with('user', 'session')
+            ->latest()
+            ->take(5)
+            ->get();
 
-        return view('admin/index', ['allStudent' => $allStudent, 'sessions' => $sessions, 'active' => $active, 'present' => $present]);
+        return view('admin/index', ['allStudent' => $allStudent, 'sessions' => $sessions, 'active' => $active, 'present' => $present, 'recentScans' => $recentScans]);
     }
 
     public function endSession(ClassSession $session)
@@ -68,7 +73,7 @@ class AdminController extends Controller
         $qrSvg = null;
 
         if ($activeQr) {
-            $qrUrl = url('/scan?token='.$activeQr->token);
+            $qrUrl = url('/scan?token=' . $activeQr->token);
             $qrSvg = QrCode::size(220)->generate($qrUrl);
         }
 
