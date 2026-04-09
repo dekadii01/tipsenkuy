@@ -44,7 +44,7 @@
                             </div>
 
                             <div class="flex-1 min-w-0 flex flex-col gap-1">
-                                <p class="text-sm font-medium text-gray-900">{{ $session->nama }}</p>
+                                <p class="text-sm font-medium text-gray-900">{{ $session->nama_sesi }}</p>
                                 <div class="flex flex-wrap items-center gap-3">
                                     <div class="flex items-center gap-1">
                                         <svg width="10" height="10" viewBox="0 0 12 12" fill="none"

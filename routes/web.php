@@ -4,8 +4,8 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ScanQrController;
 use App\Http\Controllers\SessionQrController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', [UserController::class, 'index'])->name('home');
 
@@ -38,4 +38,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/create-attendance', [AdminController::class, 'createAttendance'])->name('admin.attendance.store')->middleware('auth');
     Route::post('/admin/sessions/{session}/generate-qr', [SessionQrController::class, 'generate'])->name('admin.sessions.generate-qr')->middleware('auth');
     Route::patch('/admin/sessions/{session}/end', [AdminController::class, 'endSession'])->name('admin.sessions.end')->middleware('auth');
+
+    Route::patch('/admin/sessions/{session}/start', [AdminController::class, 'startSession'])->name('admin.sessions.start')->middleware('auth');
 });

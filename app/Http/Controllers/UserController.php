@@ -2,13 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\LoginRequest;
-use App\Http\Requests\RegisterRequest;
 use App\Models\Attendance;
 use App\Models\ClassSession;
-use App\Models\QrsSession;
-use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
@@ -56,7 +51,9 @@ class UserController extends Controller
 
     public function history()
     {
-        return view('user/history');
+        $history = ClassSession::all();
+
+        return view('user/history', compact('history'));
     }
 
     public function mySessions()
