@@ -67,7 +67,8 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <h2 class="text-sm font-medium text-gray-900">Sesi Hari Ini</h2>
-                        <p class="text-[0.72rem] font-light text-gray-400 mt-0.5">8 sesi terjadwal</p>
+                        <p class="text-[0.72rem] font-light text-gray-400 mt-0.5">{{ $sessions->count() }} sesi
+                            terjadwal</p>
                     </div>
                     <a href="{{ route('admin.attendance.create') }}"
                         class="flex items-center gap-1.5 px-4 py-2 bg-blue-900 hover:bg-blue-950 text-white text-xs font-normal rounded-xl transition-all duration-200 hover:-translate-y-px no-underline">
@@ -80,7 +81,7 @@
 
                 <div class="flex flex-col gap-3">
 
-                    @foreach ($sessions as $session)
+                    @foreach ($sessions->take(6) as $session)
                         <div
                             class="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-gray-300 transition-colors">
 
@@ -264,22 +265,26 @@
                     </div>
 
                     <div class="px-5">
-                        @foreach ([['Andi Pratama', 'Basis Data', '08:03'], ['Citra Dewi', 'Basis Data', '08:09'], ['Fajar Nugroho', 'Prak. Jaringan', '09:04'], ['Gita Permata', 'Prak. Jaringan', '09:11'], ['Hendra Wijaya', 'Kelas Algoritma', '10:02']] as [$name, $session, $time])
+                        @foreach ($recentScans as $scan)
                             <div @class([
                                 'flex items-center gap-3 py-3',
                                 'border-b border-gray-100' => !$loop->last,
                             ])>
                                 <div
                                     class="w-7 h-7 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-[0.6rem] font-medium text-blue-900 shrink-0">
-                                    {{ strtoupper(substr($name, 0, 2)) }}
+                                    {{ strtoupper(substr($scan->user->first_name . ' ' . $scan->user->last_name, 0, 2)) }}
                                 </div>
                                 <div class="flex-1 min-w-0">
-                                    <p class="text-xs font-normal text-gray-800 truncate">{{ $name }}</p>
-                                    <p class="text-[0.65rem] font-light text-gray-400 truncate">{{ $session }}
+                                    <p class="text-xs font-normal text-gray-800 truncate">
+                                        {{ $scan->user->first_name . ' ' . $scan->user->last_name }}
+                                    </p>
+                                    <p class="text-[0.65rem] font-light text-gray-400 truncate">
+                                        {{ $scan->session->nama_sesi }}
                                     </p>
                                 </div>
                                 <div class="flex items-center gap-1.5 shrink-0">
-                                    <span class="text-[0.65rem] font-light text-gray-400">{{ $time }}</span>
+                                    <span
+                                        class="text-[0.65rem] font-light text-gray-400">{{ $scan->created_at->format('H:i') }}</span>
                                     <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
                                 </div>
                             </div>
