@@ -67,7 +67,8 @@
                 <div class="flex items-center justify-between">
                     <div>
                         <h2 class="text-sm font-medium text-gray-900">Sesi Hari Ini</h2>
-                        <p class="text-[0.72rem] font-light text-gray-400 mt-0.5">8 sesi terjadwal</p>
+                        <p class="text-[0.72rem] font-light text-gray-400 mt-0.5">{{ $sessions->count() }} sesi
+                            terjadwal</p>
                     </div>
                     <a href="{{ route('admin.attendance.create') }}"
                         class="flex items-center gap-1.5 px-4 py-2 bg-blue-900 hover:bg-blue-950 text-white text-xs font-normal rounded-xl transition-all duration-200 hover:-translate-y-px no-underline">
@@ -80,7 +81,7 @@
 
                 <div class="flex flex-col gap-3">
 
-                    @foreach ($sessions as $session)
+                    @foreach ($sessions->take(6) as $session)
                         <div
                             class="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-gray-300 transition-colors">
 

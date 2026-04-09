@@ -55,7 +55,7 @@
         <section class="flex flex-col gap-4">
 
             <p class="text-[0.72rem] font-light text-gray-400">
-                Menampilkan <span class="font-medium text-gray-600">8</span> sesi
+                Menampilkan <span class="font-medium text-gray-600">{{ $sessions->count() }}</span> sesi
             </p>
 
             @foreach ($sessions as $session)
@@ -135,8 +135,9 @@
                                                 stroke-width="1.2" stroke-linecap="round" />
                                         </svg>
                                         <span class="text-[0.72rem] font-light text-gray-400">
-                                            <span class="font-medium text-gray-600">{{ $session['present'] }}</span> /
-                                            {{ $session['total'] }} hadir
+                                            <span class="font-medium text-gray-600">{{ $session->present_count }}</span>
+                                            /
+                                            {{ $totalUsers }} hadir
                                         </span>
                                     </div>
                                 </div>

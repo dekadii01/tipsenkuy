@@ -93,9 +93,14 @@ class AdminController extends Controller
 
     public function attendanceIndex()
     {
-        $sessions = ClassSession::all();
+        $sessions = ClassSession::withCount([
+            'attendances as present_count' => function ($query) {
+                $query->where('status', 'present');
+            }
+        ])->get();
+        $totalUsers = User::where('role', 'user')->count();
 
-        return view('admin.attendance.index', compact('sessions'));
+        return view('admin.attendance.index', compact('sessions', 'totalUsers'));
     }
 
     public function showCreateAttendance()
