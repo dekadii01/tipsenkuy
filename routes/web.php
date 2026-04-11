@@ -41,6 +41,6 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/create-attendance', [AdminController::class, 'createAttendance'])->name('admin.attendance.store')->middleware('auth');
     Route::post('/admin/sessions/{session}/generate-qr', [SessionQrController::class, 'generate'])->name('admin.sessions.generate-qr')->middleware('auth');
     Route::patch('/admin/sessions/{session}/end', [AdminController::class, 'endSession'])->name('admin.sessions.end')->middleware('auth');
-
     Route::patch('/admin/sessions/{session}/start', [AdminController::class, 'startSession'])->name('admin.sessions.start')->middleware('auth');
+    Route::get('/admin/profile', [AdminController::class, 'profile'])->name('admin.profile')->middleware('auth');
 });

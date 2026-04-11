@@ -26,6 +26,11 @@ class AdminController extends Controller
         return view('admin/index', ['allStudent' => $allStudent, 'sessions' => $sessions, 'active' => $active, 'present' => $present, 'recentScans' => $recentScans]);
     }
 
+    public function profile()
+    {
+        return view('admin/profile');
+    }
+
     public function endSession(ClassSession $session)
     {
         if ($session->status === 'ended') {
