@@ -24,6 +24,11 @@ class UserController extends Controller
         return view('auth/register');
     }
 
+    public function profile()
+    {
+        return view('user/profile');
+    }
+
     public function dashboard()
     {
         $attendances = Attendance::where('user_id', Auth::id())

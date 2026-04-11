@@ -27,7 +27,10 @@ Route::middleware(['auth', 'user'])->group(function () {
     Route::post('/scan', [ScanQrController::class, 'process'])->name('scan.process');
     Route::get('/history', [UserController::class, 'history'])->name('attendance.user.history')->middleware('auth');
     Route::get('/sessions', [UserController::class, 'mySessions'])->name('my-sessions')->middleware('auth');
+    Route::get('/profile', [UserController::class, 'profile'])->name('user.profile')->middleware('auth');
 });
+
+
 
 Route::middleware(['auth', 'admin'])->group(function () {
     // Admin Routes
