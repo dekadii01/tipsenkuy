@@ -3,7 +3,22 @@
     <x-navbar-auth-user />
 
     <main class="max-w-5xl mx-auto px-6 py-10 flex flex-col gap-6">
+        {{-- Breadcrumb --}}
+        <nav class="flex items-center gap-1.5 flex-wrap">
+            <a href="{{ route('dashboard-user') }}"
+                class="text-xs font-light text-gray-400 hover:text-gray-600 transition-colors no-underline">
+                Dashboard
+            </a>
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" class="text-gray-300">
+                <path d="M3.5 2l3 3-3 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+            <a href="{{ route('attendance.user.history') }}"
+                class="text-xs font-light text-gray-400 hover:text-gray-600 transition-colors no-underline">
+                History Absensi
+            </a>
 
+        </nav>
 
         <section class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>

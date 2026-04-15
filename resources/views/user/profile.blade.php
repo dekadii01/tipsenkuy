@@ -1,12 +1,10 @@
 <x-layout-main bodyClass="bg-gray-50 text-gray-900 antialiased min-h-screen" title="Profil Saya">
 
-    {{-- NAVBAR --}}
     <x-navbar-auth-user />
 
     <main class="max-w-5xl mx-auto px-6 py-10 flex flex-col gap-6">
 
 
-        {{-- ── PAGE HEADER ── --}}
         <section class="flex flex-col gap-1">
             <h1 class="text-2xl font-light tracking-tight text-gray-900">
                 Profil <span class="font-medium">Saya</span>
@@ -17,29 +15,22 @@
         </section>
 
 
-        {{-- ── MAIN GRID ── --}}
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
 
-            {{-- ════════════════════════════════
-                 LEFT — PROFILE CARD
-            ════════════════════════════════ --}}
             <div class="flex flex-col gap-4">
 
-                {{-- Avatar card --}}
                 <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden">
 
                     <div class="h-[3px] bg-blue-900"></div>
 
                     <div class="p-6 flex flex-col items-center gap-4 text-center">
 
-                        {{-- Avatar --}}
                         <div
                             class="w-20 h-20 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center text-2xl font-medium text-blue-900 tracking-wide">
                             {{ strtoupper(substr(auth()->user()->first_name ?? 'U', 0, 1)) }}{{ strtoupper(substr(auth()->user()->last_name ?? '', 0, 1)) }}
                         </div>
 
-                        {{-- Name & role --}}
                         <div class="flex flex-col gap-1">
                             <p class="text-base font-medium text-gray-900">
                                 {{ auth()->user()->first_name ?? 'First' }} {{ auth()->user()->last_name ?? 'Last' }}
@@ -53,10 +44,8 @@
                             </span>
                         </div>
 
-                        {{-- Divider --}}
                         <div class="w-full border-t border-gray-100"></div>
 
-                        {{-- Quick stats --}}
                         <div class="w-full grid grid-cols-3 gap-2">
                             <div class="flex flex-col items-center gap-0.5">
                                 <p class="text-base font-light text-gray-900">24</p>
@@ -78,7 +67,6 @@
                     </div>
                 </div>
 
-                {{-- Navigation links --}}
                 <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden">
                     @foreach ([['Informasi Pribadi', 'M3 7h18M3 12h18M3 17h18', '#info', true], ['Keamanan', 'M12 2a4 4 0 0 1 4 4v2H8V6a4 4 0 0 1 4-4zM4 12h16v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8z', '#security', false], ['Notifikasi', 'M8 2a5 5 0 0 0-5 5v2.5L2 11h12l-1-1.5V7a5 5 0 0 0-5-5zM6.5 13a1.5 1.5 0 0 0 3 0', '#notif', false]] as [$label, $icon, $href, $active])
                         <a href="{{ $href }}" @class([
@@ -103,7 +91,6 @@
                     @endforeach
                 </div>
 
-                {{-- Danger zone --}}
                 <div class="bg-white border border-gray-200 rounded-2xl p-5 flex flex-col gap-3">
                     <p class="text-xs font-medium text-gray-500">Akun</p>
                     <form method="POST" action="{{ route('logout') }}">
@@ -124,13 +111,9 @@
             </div>
 
 
-            {{-- ════════════════════════════════
-                 RIGHT — FORMS
-            ════════════════════════════════ --}}
             <div class="lg:col-span-2 flex flex-col gap-6">
 
 
-                {{-- ── SECTION: Informasi Pribadi ── --}}
                 <div id="info" class="bg-white border border-gray-200 rounded-2xl overflow-hidden">
 
                     <div class="h-[3px] bg-blue-900"></div>
@@ -145,7 +128,6 @@
                         @csrf
                         @method('PATCH')
 
-                        {{-- Name row --}}
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
                             <div class="flex flex-col gap-2">
@@ -175,7 +157,6 @@
 
                         </div>
 
-                        {{-- Email --}}
                         <div class="flex flex-col gap-2">
                             <label for="email" class="text-xs font-normal text-gray-600 tracking-wide">
                                 Email <span class="text-red-400">*</span>
@@ -202,7 +183,6 @@
                             @enderror
                         </div> --}}
 
-                        {{-- Success message --}}
                         @if (session('status') === 'profile-updated')
                             <div
                                 class="flex items-center gap-2 px-4 py-3 bg-green-50 border border-green-200 rounded-xl">
@@ -215,7 +195,6 @@
                             </div>
                         @endif
 
-                        {{-- Actions --}}
                         <div class="flex justify-end pt-1">
                             <button type="submit"
                                 class="flex items-center gap-2 px-6 py-2.5 bg-blue-900 hover:bg-blue-950 text-white text-sm font-normal rounded-xl transition-all duration-200 hover:-translate-y-px">
@@ -227,7 +206,6 @@
                 </div>
 
 
-                {{-- ── SECTION: Keamanan ── --}}
                 <div id="security" class="bg-white border border-gray-200 rounded-2xl overflow-hidden">
 
                     <div class="px-7 py-5 border-b border-gray-100">
@@ -239,7 +217,6 @@
                         @csrf
                         @method('PUT')
 
-                        {{-- Current password --}}
                         <div class="flex flex-col gap-2">
                             <label for="current_password" class="text-xs font-normal text-gray-600 tracking-wide">
                                 Password saat ini <span class="text-red-400">*</span>
@@ -252,7 +229,6 @@
                             @enderror
                         </div>
 
-                        {{-- New password --}}
                         <div class="flex flex-col gap-2">
                             <label for="password" class="text-xs font-normal text-gray-600 tracking-wide">
                                 Password baru <span class="text-red-400">*</span>
@@ -265,7 +241,6 @@
                             @enderror
                         </div>
 
-                        {{-- Confirm password --}}
                         <div class="flex flex-col gap-2">
                             <label for="password_confirmation"
                                 class="text-xs font-normal text-gray-600 tracking-wide">
@@ -279,7 +254,6 @@
                             @enderror
                         </div>
 
-                        {{-- Success --}}
                         @if (session('status') === 'password-updated')
                             <div
                                 class="flex items-center gap-2 px-4 py-3 bg-green-50 border border-green-200 rounded-xl">
@@ -303,7 +277,6 @@
                 </div>
 
 
-                {{-- ── SECTION: Notifikasi ── --}}
                 <div id="notif" class="bg-white border border-gray-200 rounded-2xl overflow-hidden">
 
                     <div class="px-7 py-5 border-b border-gray-100">
@@ -345,7 +318,6 @@
         </div>
 
 
-        {{-- ── FOOTER ── --}}
         <footer class="text-center pt-2 pb-4">
             <p class="text-[0.65rem] font-light text-gray-300 tracking-widest">
                 &copy; {{ date('Y') }} TipsenKuy · Built with Laravel &amp; Tailwind CSS

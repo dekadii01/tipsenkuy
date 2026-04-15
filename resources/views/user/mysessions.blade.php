@@ -3,7 +3,21 @@
     <x-navbar-auth-user />
 
     <main class="max-w-5xl mx-auto px-6 py-10 flex flex-col gap-10">
-
+        {{-- Breadcrumb --}}
+        <nav class="flex items-center gap-1.5 flex-wrap">
+            <a href="{{ route('dashboard-user') }}"
+                class="text-xs font-light text-gray-400 hover:text-gray-600 transition-colors no-underline">
+                Dashboard
+            </a>
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" class="text-gray-300">
+                <path d="M3.5 2l3 3-3 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+            <a href="{{ route('my-sessions') }}"
+                class="text-xs font-light text-gray-400 hover:text-gray-600 transition-colors no-underline">
+                Sesi
+            </a>
+        </nav>
         <section class="flex flex-col gap-1">
             <h1 class="text-2xl font-light tracking-tight text-gray-900">
                 Sesi <span class="font-medium">Saya</span>
@@ -44,7 +58,8 @@
                             </div>
 
                             <div class="flex-1 min-w-0 flex flex-col gap-1">
-                                <p class="text-sm font-medium text-gray-900">{{ $session->nama_sesi }}</p>
+                                <a href="{{ route('session.detail', $session->id) }}"
+                                    class="text-sm font-medium text-gray-900">{{ $session->nama_sesi }}</a>
                                 <div class="flex flex-wrap items-center gap-3">
                                     <div class="flex items-center gap-1">
                                         <svg width="10" height="10" viewBox="0 0 12 12" fill="none"
@@ -135,7 +150,8 @@
                         </div>
 
                         <div class="flex-1 min-w-0 flex flex-col gap-1">
-                            <p class="text-sm font-medium text-gray-700">{{ $session->nama_sesi }}</p>
+                            <a href="{{ route('session.detail', $session->id) }}"
+                                class="text-sm font-medium text-gray-700">{{ $session->nama_sesi }}</a>
                             <div class="flex flex-wrap items-center gap-3">
                                 <div class="flex items-center gap-1">
                                     <svg width="10" height="10" viewBox="0 0 12 12" fill="none"
@@ -200,7 +216,8 @@
                         </div>
 
                         <div class="flex-1 min-w-0 flex flex-col gap-1">
-                            <p class="text-sm font-medium text-gray-500">{{ $session->nama_sesi }}</p>
+                            <a href="{{ route('session.detail', $session->id) }}"
+                                class="text-sm font-medium text-gray-500">{{ $session->nama_sesi }}</a>
                             <div class="flex flex-wrap items-center gap-3">
                                 <div class="flex items-center gap-1">
                                     <svg width="10" height="10" viewBox="0 0 12 12" fill="none"
