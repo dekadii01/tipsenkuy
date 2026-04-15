@@ -124,7 +124,8 @@
                         </p>
                     </div>
 
-                    <form method="POST" action="" class="px-7 py-6 flex flex-col gap-5">
+                    <form method="POST" action="{{ route('user.profile.update') }}"
+                        class="px-7 py-6 flex flex-col gap-5">
                         @csrf
                         @method('PATCH')
 
@@ -135,8 +136,8 @@
                                     Nama depan <span class="text-red-400">*</span>
                                 </label>
                                 <input id="first_name" type="text" name="first_name"
-                                    value="{{ old('first_name', auth()->user()->first_name ?? '') }}" placeholder="John"
-                                    required
+                                    value="{{ old('first_name', auth()->user()->first_name ?? '') }}"
+                                    placeholder="John" required
                                     class="w-full px-4 py-2.5 text-sm font-light text-gray-900 bg-gray-50 border border-gray-200 rounded-xl placeholder-gray-300 focus:outline-none focus:border-blue-300 focus:bg-white focus:ring-2 focus:ring-blue-100 transition-all duration-200">
                                 @error('first_name')
                                     <p class="text-[0.72rem] font-light text-red-500">{{ $message }}</p>
@@ -212,7 +213,8 @@
                         <p class="text-[0.72rem] font-light text-gray-400 mt-0.5">Perbarui password akun kamu</p>
                     </div>
 
-                    <form method="POST" action="" class="px-7 py-6 flex flex-col gap-5">
+                    <form method="POST" action="{{ route('user.profile.password') }}"
+                        class="px-7 py-6 flex flex-col gap-5">
                         @csrf
                         @method('PUT')
 

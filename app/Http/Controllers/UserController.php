@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Attendance;
 use App\Models\ClassSession;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 
 class UserController extends Controller
 {
@@ -27,6 +30,42 @@ class UserController extends Controller
     public function profile()
     {
         return view('user/profile');
+    }
+
+    // Update profil (nama & email)
+    public function updateProfile(Request $request)
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        $validated = $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name'  => 'nullable|string|max:255',
+            'email'      => 'required|email|max:255|unique:users,email,' . $user->id,
+        ]);
+
+        $user->update($validated);
+
+        return back()->with('status', 'profile-updated');
+    }
+
+    // Update password
+    public function updatePassword(Request $request)
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+
+        $request->validate([
+            'current_password' => 'required|current_password',
+            'password'         => ['required', 'confirmed', Password::min(8)],
+        ]);
+
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        return back()->with('status', 'password-updated');
     }
 
     public function sessionDetail(ClassSession $session)
