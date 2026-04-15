@@ -28,6 +28,8 @@ Route::middleware(['auth', 'user'])->group(function () {
     Route::get('/history', [UserController::class, 'history'])->name('attendance.user.history')->middleware('auth');
     Route::get('/sessions', [UserController::class, 'mySessions'])->name('my-sessions')->middleware('auth');
     Route::get('/profile', [UserController::class, 'profile'])->name('user.profile')->middleware('auth');
+    Route::patch('/profile', [UserController::class, 'updateProfile'])->name('user.profile.update');
+    Route::put('/profile/password', [UserController::class, 'updatePassword'])->name('user.profile.password');
     Route::get('/sessions/{session}', [UserController::class, 'sessionDetail'])->name('session.detail')->middleware('auth');
 });
 
