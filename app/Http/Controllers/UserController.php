@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Attendance;
 use App\Models\ClassSession;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -70,11 +71,31 @@ class UserController extends Controller
 
     public function sessionDetail(ClassSession $session)
     {
-        $attendance = Attendance::where('user_id', Auth::id())
+        /** @var User $user */
+        $user = Auth::user();
+
+        $attendance = Attendance::where('user_id', $user->id)
             ->where('session_id', $session->id)
             ->first();
 
-        return view('user/sessiondetail', compact('session', 'attendance'));
+        $totalPeserta = User::where('role', 'user')->count();
+
+        $userAttended = $attendance !== null;
+
+        // Map status DB ke status yang dipakai Blade
+        $sessionStatus = match ($session->status) {
+            'active'  => 'active',
+            'ended'   => 'ended',
+            default   => 'upcoming', // pending
+        };
+
+        return view('user/sessiondetail', compact(
+            'session',
+            'attendance',
+            'userAttended',
+            'sessionStatus',
+            'totalPeserta',
+        ));
     }
 
     public function dashboard()
