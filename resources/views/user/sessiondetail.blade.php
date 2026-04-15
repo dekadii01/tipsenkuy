@@ -1,15 +1,12 @@
 <x-layout-main bodyClass="bg-gray-50 text-gray-900 antialiased min-h-screen" title="Detail Sesi">
 
-    {{-- NAVBAR --}}
     <x-navbar-auth-user />
 
     <main class="max-w-2xl mx-auto px-6 py-10 flex flex-col gap-6">
 
 
-        {{-- ── PAGE HEADER ── --}}
         <section class="flex flex-col gap-2">
 
-            {{-- Breadcrumb --}}
             <nav class="flex items-center gap-1.5 flex-wrap">
                 <a href="{{ route('dashboard-user') }}"
                     class="text-xs font-light text-gray-400 hover:text-gray-600 transition-colors no-underline">
@@ -30,11 +27,10 @@
                 <span class="text-xs font-light text-gray-500">Detail</span>
             </nav>
 
-            {{-- Title + back --}}
             <div class="flex items-start justify-between gap-4">
                 <div>
                     <h1 class="text-2xl font-light tracking-tight text-gray-900">
-                        Kelas <span class="font-medium">Basis Data</span>
+                        Kelas <span class="font-medium">{{ $session->nama_sesi }}</span>
                     </h1>
                     <p class="text-sm font-light text-gray-400 mt-1">
                         Informasi sesi dan status kehadiran kamu
@@ -53,21 +49,8 @@
         </section>
 
 
-        {{--
-            ══════════════════════════════════════
-            SWITCH: $sessionStatus & $userAttended
-            Replace with actual Blade variables:
-              $sessionStatus = 'active' | 'upcoming' | 'ended'
-              $userAttended  = true | false
-            ══════════════════════════════════════
-        --}}
-        @php
-            $sessionStatus = 'active';
-            $userAttended = false;
-        @endphp
 
 
-        {{-- ── SESSION INFO CARD ── --}}
         <section>
             <div class="bg-white border border-gray-200 rounded-2xl overflow-hidden">
 
@@ -75,17 +58,15 @@
 
                 <div class="p-6 flex flex-col gap-4">
 
-                    {{-- Session name --}}
                     <div>
-                        <p class="text-lg font-medium text-gray-900">Kelas Basis Data</p>
+                        <p class="text-lg font-medium text-gray-900">Kelas {{ $session->nama_sesi }}</p>
                         <p class="text-sm font-light text-gray-400 mt-1 leading-relaxed">
-                            Sesi perkuliahan mata kuliah Basis Data semester genap 2025/2026.
+                            {{ $session->deskripsi ?? 'Tidak ada deskripsi untuk sesi ini.' }}
                         </p>
                     </div>
 
                     <div class="border-t border-gray-100"></div>
 
-                    {{-- Meta grid --}}
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 
                         <div class="flex items-center gap-3 px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl">
@@ -101,7 +82,9 @@
                             </div>
                             <div>
                                 <p class="text-[0.65rem] font-light text-gray-400 uppercase tracking-wider">Tanggal</p>
-                                <p class="text-sm font-normal text-gray-800 mt-0.5">Senin, 5 April 2026</p>
+                                <p class="text-sm font-normal text-gray-800 mt-0.5">
+                                    {{ $session->tanggal->translatedFormat('l, d F Y') }}
+                                </p>
                             </div>
                         </div>
 
@@ -118,7 +101,10 @@
                             </div>
                             <div>
                                 <p class="text-[0.65rem] font-light text-gray-400 uppercase tracking-wider">Waktu</p>
-                                <p class="text-sm font-normal text-gray-800 mt-0.5">08:00 – 10:00 WIB</p>
+                                <p class="text-sm font-normal text-gray-800 mt-0.5">{{ $session->jam_mulai }} –
+                                    {{ $session->jam_selesai }}
+                                    WITA
+                                </p>
                             </div>
                         </div>
 
@@ -135,7 +121,8 @@
                             </div>
                             <div>
                                 <p class="text-[0.65rem] font-light text-gray-400 uppercase tracking-wider">Peserta</p>
-                                <p class="text-sm font-normal text-gray-800 mt-0.5">32 peserta terdaftar</p>
+                                <p class="text-sm font-normal text-gray-800 mt-0.5">{{ $totalPeserta }} peserta
+                                    terdaftar</p>
                             </div>
                         </div>
 
@@ -162,7 +149,6 @@
         </section>
 
 
-        {{-- ── STATUS SECTION ── --}}
         <section>
             <div class="bg-white border border-gray-200 rounded-2xl p-6 flex flex-col gap-4">
 
@@ -170,7 +156,6 @@
 
                 <div class="flex flex-col gap-3">
 
-                    {{-- A. Session status --}}
                     <div class="flex items-center justify-between py-3 border-b border-gray-100">
                         <div class="flex items-center gap-2.5">
                             <svg width="14" height="14" viewBox="0 0 14 14" fill="none"
@@ -207,7 +192,6 @@
                         </div>
                     </div>
 
-                    {{-- B. User attendance status --}}
                     <div class="flex items-center justify-between py-3">
                         <div class="flex items-center gap-2.5">
                             <svg width="14" height="14" viewBox="0 0 14 14" fill="none"
@@ -252,12 +236,10 @@
         </section>
 
 
-        {{-- ── MAIN CTA ── --}}
         <section>
             <div class="bg-white border border-gray-200 rounded-2xl p-6 flex flex-col items-center gap-5">
 
                 @if ($sessionStatus === 'active' && !$userAttended)
-                    {{-- Active & not attended — scannable --}}
                     <div class="flex flex-col items-center gap-2 text-center">
                         <div
                             class="w-12 h-12 rounded-2xl bg-blue-50 border border-blue-200 flex items-center justify-center">
@@ -292,7 +274,6 @@
                         Scan Sekarang
                     </a>
                 @elseif ($sessionStatus === 'active' && $userAttended)
-                    {{-- Active & already attended --}}
                     <div class="flex flex-col items-center gap-2 text-center">
                         <div
                             class="w-12 h-12 rounded-2xl bg-green-50 border border-green-200 flex items-center justify-center">
@@ -312,10 +293,10 @@
                             <path d="M2.5 7l3.5 3.5 5.5-7" stroke="currentColor" stroke-width="1.4"
                                 stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
-                        <span class="text-xs font-light text-green-700">Tercatat pukul 08:42 WIB</span>
+                        <span class="text-xs font-light text-green-700">Tercatat pukul
+                            {{ $attendance->scanned_at->format('H:i') }} WIB</span>
                     </div>
                 @elseif ($sessionStatus === 'upcoming')
-                    {{-- Upcoming session --}}
                     <div class="flex flex-col items-center gap-2 text-center">
                         <div
                             class="w-12 h-12 rounded-2xl bg-gray-100 border border-gray-200 flex items-center justify-center">
@@ -336,7 +317,6 @@
                         Belum Tersedia
                     </button>
                 @else
-                    {{-- Ended session --}}
                     <div class="flex flex-col items-center gap-2 text-center">
                         <div
                             class="w-12 h-12 rounded-2xl bg-gray-100 border border-gray-200 flex items-center justify-center">
@@ -360,7 +340,6 @@
         </section>
 
 
-        {{-- ── INFO NOTE ── --}}
         @if ($sessionStatus !== 'ended')
             <section>
                 <div class="flex items-start gap-3 px-5 py-4 bg-blue-50 border border-blue-100 rounded-xl">
@@ -399,7 +378,6 @@
         --}}
 
 
-        {{-- ── FOOTER ── --}}
         <footer class="text-center pt-2 pb-4">
             <p class="text-[0.65rem] font-light text-gray-300 tracking-widest">
                 &copy; {{ date('Y') }} TipsenKuy · Built with Laravel &amp; Tailwind CSS
