@@ -170,7 +170,6 @@
                             @enderror
                         </div>
 
-                        {{-- NIM / Student ID --}}
                         {{-- <div class="flex flex-col gap-2">
                             <label for="nim" class="text-xs font-normal text-gray-600 tracking-wide">
                                 NIM / ID Peserta
