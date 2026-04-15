@@ -15,15 +15,23 @@ class AdminController extends Controller
     public function dashboard()
     {
         $allStudent = User::where('role', 'user')->count();
-        $sessions = ClassSession::all();
-        $active = true;
-        $present = 0;
+        $sessions   = ClassSession::all();
+
+        $activeCount  = ClassSession::where('status', 'active')->count();
+        $presentCount = Attendance::whereDate('created_at', today())->count();
+
         $recentScans = Attendance::with('user', 'session')
             ->latest()
             ->take(5)
             ->get();
 
-        return view('admin/index', ['allStudent' => $allStudent, 'sessions' => $sessions, 'active' => $active, 'present' => $present, 'recentScans' => $recentScans]);
+        return view('admin/index', [
+            'allStudent'   => $allStudent,
+            'sessions'     => $sessions,
+            'activeCount'  => $activeCount,
+            'presentCount' => $presentCount,
+            'recentScans'  => $recentScans,
+        ]);
     }
 
     public function profile()
@@ -102,7 +110,11 @@ class AdminController extends Controller
             'attendances as present_count' => function ($query) {
                 $query->where('status', 'present');
             }
-        ])->get();
+        ])->get()->map(function ($session) {
+            $session->present_count = $session->present_count ?? 0;
+            return $session;
+        });
+
         $totalUsers = User::where('role', 'user')->count();
 
         return view('admin.attendance.index', compact('sessions', 'totalUsers'));
