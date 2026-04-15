@@ -29,6 +29,15 @@ class UserController extends Controller
         return view('user/profile');
     }
 
+    public function sessionDetail(ClassSession $session)
+    {
+        $attendance = Attendance::where('user_id', Auth::id())
+            ->where('session_id', $session->id)
+            ->first();
+
+        return view('user/sessiondetail', compact('session', 'attendance'));
+    }
+
     public function dashboard()
     {
         $attendances = Attendance::where('user_id', Auth::id())
