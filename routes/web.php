@@ -17,6 +17,11 @@ Route::post('/logout', [AuthController::class, 'logout'])
     ->name('logout');
 Route::post('/login', [AuthController::class, 'login'])
     ->name('login');
+Route::patch('/admin/profile', [AdminController::class, 'updateProfile'])
+    ->name('admin.profile.update');
+Route::put('/admin/profile/password', [AdminController::class, 'updatePassword'])
+    ->name('admin.profile.password');
+
 
 // Protected Routes
 Route::middleware(['auth', 'user'])->group(function () {

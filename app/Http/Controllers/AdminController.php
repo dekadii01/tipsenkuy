@@ -8,6 +8,9 @@ use App\Models\QrsSession;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class AdminController extends Controller
@@ -38,6 +41,49 @@ class AdminController extends Controller
     {
         return view('admin/profile');
     }
+
+    //Update profil admin (nama & email)
+    public function updateProfile(Request $request)
+    {        /** @var User $admin */
+        $admin = Auth::user();
+
+        $validated = $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'nullable|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $admin->id,
+        ]);
+
+        $admin->update($validated);
+
+        return back()->with('success', 'Profil berhasil diperbarui.');
+    }
+
+    
+
+    //Update Password Admin
+    public function updatePassword(Request $request)
+    {        /** @var User $admin */
+        $admin = Auth::user();  
+
+        $request->validate([
+            'current_password' => 'required',
+            'new_password' => ['required', Password::min(8)->mixedCase()->numbers()->symbols()],
+            'new_password_confirmation' => 'required|same:new_password',
+        ]);
+        
+
+        if (!Hash::check($request->current_password, $admin->password)) {
+            return back()->withErrors(['current_password' => 'Password saat ini tidak sesuai.']);
+        }
+
+        $admin->update([
+            'password' => Hash::make($request->new_password)
+        ]);
+
+
+        return back()->with('success', 'Password berhasil diperbarui.');
+    }
+
 
     public function endSession(ClassSession $session)
     {
