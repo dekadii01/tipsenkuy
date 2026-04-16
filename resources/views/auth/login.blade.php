@@ -1,4 +1,4 @@
-<x-layout-main title="Login" bodyClass="auth-body ">
+<x-layout-main title="Login" bodyClass="auth-body auth-body--login">
     <aside class="panel-left">
 
         <div class="panel-ring" style="width:320px;height:320px;top:-80px;left:-80px;"></div>
