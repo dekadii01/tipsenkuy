@@ -284,7 +284,7 @@
                                 </div>
                                 <div class="flex items-center gap-1.5 shrink-0">
                                     <span
-                                        class="text-[0.65rem] font-light text-gray-400">{{ $scan->created_at->format('H:i') }}</span>
+                                        class="text-[0.65rem] font-light text-gray-400">{{ $scan->session->created_at->format('H:i') }}</span>
                                     <span class="w-1.5 h-1.5 rounded-full bg-green-400"></span>
                                 </div>
                             </div>
