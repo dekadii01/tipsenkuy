@@ -86,11 +86,12 @@ class AdminController extends Controller
         $qrSvg = null;
 
         if ($activeQr) {
-            $qrUrl = url('/scan?token=' . $activeQr->token);
+            $qrUrl = url('/scan?token='.$activeQr->token);
             $qrSvg = QrCode::size(220)->generate($qrUrl);
         }
 
         $allStudent = User::where('role', 'user')->count();
+        $allStudentname = User::where('role', 'user')->get();
         $attendances = $session->attendances()->with('user')->latest()->get();
         $presentCount = $attendances->count();
 
@@ -100,7 +101,8 @@ class AdminController extends Controller
             'presentCount',
             'attendances',
             'qrSvg',
-            'activeQr'
+            'activeQr',
+            'allStudentname'
         ));
     }
 
@@ -109,12 +111,8 @@ class AdminController extends Controller
         $sessions = ClassSession::withCount([
             'attendances as present_count' => function ($query) {
                 $query->where('status', 'present');
-            }
-        ])->get()->map(function ($session) {
-            $session->present_count = $session->present_count ?? 0;
-            return $session;
-        });
-
+            },
+        ])->get();
         $totalUsers = User::where('role', 'user')->count();
 
         return view('admin.attendance.index', compact('sessions', 'totalUsers'));
