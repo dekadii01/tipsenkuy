@@ -305,7 +305,7 @@
 
             {{-- Summary strip --}}
             <div class="grid grid-cols-2 gap-3">
-                <div class="bg-white border border-gray-200 rounded-2xl p-5">
+                <div class="bg-white border border-gray-200 rounded-2xl p-5" id="total-summary">
                     <p class="text-[1.6rem] font-light leading-none tracking-tight text-gray-900">
                         {{ $allStudent }}
                     </p>
@@ -314,7 +314,7 @@
                         <div class="h-full w-full bg-gray-200 rounded-full"></div>
                     </div>
                 </div>
-                <div class="bg-white border border-gray-200 rounded-2xl p-5">
+                <div class="bg-white border border-gray-200 rounded-2xl p-5" id="present-summary">
                     <p class="text-[1.6rem] font-light leading-none tracking-tight text-gray-900">
                         {{ $presentCount }}
                         <span class="text-base text-gray-400 font-light">/ {{ $allStudent }}</span>
@@ -346,49 +346,33 @@
                     @endif
                 </div>
 
+
+
                 {{-- List (scrollable) --}}
                 <div class="px-6 overflow-y-auto max-h-96">
 
-                    @forelse ($attendances as $record)
-                        <div @class([
-                            'flex items-center gap-3.5 py-3',
-                            'border-b border-gray-100' => !$loop->last,
-                        ])>
+                    @foreach ($allStudentname as $student)
+
+                        <div class="participant flex items-center gap-3.5 py-3 border-b border-gray-100"
+                            data-status="{{ $attendances->contains('user_id', $student->id) ? 'present' : 'absent' }}">
                             <div
-                                class="w-8 h-8 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-[0.65rem] font-medium text-blue-900 shrink-0 tracking-wide">
-                                {{ strtoupper(substr($record->user->first_name ?? 'XX', 0, 2)) }}
+                                class="w-8 h-8 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-[0.65rem] font-medium text-blue-900">
+                                {{ strtoupper(substr($student->first_name, 0, 2)) }}
                             </div>
-                            <div class="flex-1 min-w-0">
-                                <p class="text-sm font-normal text-gray-800 truncate">
-                                    {{ $record->user->first_name . ' ' . $record->user->last_name ?? '-' }}
+
+                            <div class="flex-1">
+                                <p class="text-sm text-gray-800">
+                                    {{ $student->first_name }} {{ $student->last_name }}
                                 </p>
                             </div>
-                            <div class="flex items-center gap-2 shrink-0">
-                                <span class="text-[0.7rem] font-light text-gray-400">
-                                    {{ \Carbon\Carbon::parse($record->created_at)->format('H:i') }}
-                                </span>
-                                <span class="w-1.5 h-1.5 rounded-full bg-green-400 shrink-0"></span>
-                            </div>
+
+                            @if ($attendances->contains('user_id', $student->id))
+                                <span class="text-[0.7rem] text-green-500">Hadir</span>
+                            @else
+                                <span class="text-[0.7rem] text-gray-400">Belum</span>
+                            @endif
                         </div>
-                    @empty
-                        <div class="flex flex-col items-center justify-center gap-3 py-16 text-center">
-                            <div
-                                class="w-12 h-12 rounded-2xl bg-gray-50 border border-gray-200 flex items-center justify-center">
-                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
-                                    class="text-gray-300">
-                                    <circle cx="10" cy="8" r="3.5" stroke="currentColor"
-                                        stroke-width="1.4" />
-                                    <path d="M3 17c0-3.314 3.134-6 7-6s7 2.686 7 6" stroke="currentColor"
-                                        stroke-width="1.4" stroke-linecap="round" />
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="text-sm font-normal text-gray-500">Belum ada peserta yang hadir</p>
-                                <p class="text-[0.72rem] font-light text-gray-400 mt-1">Peserta akan muncul setelah
-                                    scan QR</p>
-                            </div>
-                        </div>
-                    @endforelse
+                    @endforeach
 
                 </div>
             </div>
@@ -409,6 +393,10 @@
     {{-- ── Scripts ────────────────────────────────────────────────────── --}}
     <script>
         /* ── 1. Segmented duration selector ── */
+        const totalBtn = document.getElementById('total-summary');
+        const presentBtn = document.getElementById('present-summary');
+        const participants = document.querySelectorAll('.participant');
+
         document.querySelectorAll('.duration-label').forEach(label => {
             label.addEventListener('click', () => {
                 document.querySelectorAll('.duration-label').forEach(l => {
@@ -452,6 +440,35 @@
                 setTimeout(() => flash.remove(), 400);
             }, 3000);
         }
+
+
+
+
+       if (totalBtn && presentBtn) {
+    totalBtn.addEventListener('click', () => {
+        participants.forEach(p => {
+            p.style.display = 'flex';
+        });
+
+        // active style
+        totalBtn.classList.add('ring', 'ring-gray-300');
+        presentBtn.classList.remove('ring', 'ring-blue-300');
+    });
+
+    presentBtn.addEventListener('click', () => {
+        participants.forEach(p => {
+            if (p.dataset.status === 'present') {
+                p.style.display = 'flex';
+            } else {
+                p.style.display = 'none';
+            }
+        });
+
+        // active style
+        presentBtn.classList.add('ring', 'ring-blue-300');
+        totalBtn.classList.remove('ring', 'ring-gray-300');
+    });
+}
     </script>
 
 </x-layout-main>

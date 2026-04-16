@@ -78,8 +78,11 @@
         .auth-body {
             grid-template-columns: 1fr;
         }
-        .auth-body .panel-left {
+        .auth-body.auth-body--login .panel-left {
             display: none;
+        }
+        .auth-body.auth-body--register .panel-right {
+            display: none !important;
         }
     }
 
