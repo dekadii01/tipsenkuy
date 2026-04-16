@@ -106,13 +106,23 @@ class AdminController extends Controller
         ));
     }
 
-    public function attendanceIndex()
+    public function attendanceIndex(Request $request)
     {
+
+        $filteredSessions = $request->get('filter', 'all');
         $sessions = ClassSession::withCount([
             'attendances as present_count' => function ($query) {
                 $query->where('status', 'present');
             },
-        ])->get();
+        ])
+            ->when($filteredSessions === 'aktif', function ($query) {
+                $query->where('status', 'active');
+            })->when($filteredSessions === 'selesai', function ($query) {
+                $query->where('status', 'ended');
+            })->when($filteredSessions === 'hari-ini', function ($query) {
+                $query->whereDate('tanggal', Carbon::today());
+            })
+            ->get();
         $totalUsers = User::where('role', 'user')->count();
 
         return view('admin.attendance.index', compact('sessions', 'totalUsers'));
@@ -137,4 +147,11 @@ class AdminController extends Controller
 
         return redirect()->route('admin.attendance.index')->with('success', 'Sesi berhasil dibuat!');
     }
+
+    // public funtion searchAttendance(Request $request)
+    // {
+    //     $query = $request->input('query');
+    //     $sessions = ClassSession::where('nama_sesi', 'like', '%' . $query . '%')->get();
+    //     return view('admin.attendance.index', compact('sessions'));
+    // }
 }

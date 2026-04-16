@@ -1,72 +1,33 @@
-<x-layout-main bodyClass="bg-gray-50 text-gray-900 antialiased min-h-screen" title="Semua Sesi — Admin">
+<?php
 
-    <x-navbar-admin />
+use Livewire\Component;
+use App\Models\ClassSession;
 
-    <main class="max-w-6xl mx-auto px-6 py-10 flex flex-col gap-8">
+new class extends Component {
+    public $query = '';
 
+    public function render()
+    {
+        $sessions = ClassSession::query()
+            ->when($this->query, function ($q) {
+                $q->where('nama_sesi', 'like', '%' . $this->query . '%');
+            })
+            ->limit(10)
+            ->get();
 
-        <section class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-                <h1 class="text-2xl font-light tracking-tight text-gray-900">
-                    Semua <span class="font-medium">Sesi</span>
-                </h1>
-                <p class="text-sm font-light text-gray-400 mt-1">
-                    Kelola seluruh sesi absensi
-                </p>
-            </div>
-            <a href="{{ route('admin.attendance.create') }}"
-                class="flex items-center justify-center gap-2 px-5 py-2.5 bg-blue-900 hover:bg-blue-950 text-white text-sm font-normal rounded-xl transition-all duration-200 hover:-translate-y-px no-underline self-start sm:self-auto shrink-0">
-                <svg width="13" height="13" viewBox="0 0 12 12" fill="none">
-                    <path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
-                </svg>
-                Buat Sesi
-            </a>
-        </section>
+        return view('components.search-attendance', compact('sessions'));
+    }
+};
+?>
 
-
-        <section class="flex flex-col sm:flex-row gap-3">
-
-            {{-- <form class="relative flex-1" action="" method="GET">
-                <div class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none">
-                    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" class="text-gray-400">
-                        <circle cx="6" cy="6" r="4" stroke="currentColor" stroke-width="1.3" />
-                        <path d="M10 10l2 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
-                    </svg>
-                </div>
-                <input type="text" name="search" placeholder="Cari nama sesi..."
-                    class="w-full pl-9 pr-4 py-2.5 text-sm font-light text-gray-900 bg-white border border-gray-200 rounded-xl placeholder-gray-300 focus:outline-none focus:border-blue-300 focus:ring-2 focus:ring-blue-100 transition-all duration-200" >
-            </form> --}}
-            <livewire:search-attendance />
-
-            <div class="flex items-center gap-1.5 p-1 bg-white border border-gray-200 rounded-xl shrink-0 h-fit">
-
-                @foreach ([['all', 'Semua'], ['aktif', 'Aktif'], ['selesai', 'Selesai'], ['hari-ini', 'Hari ini']] as [$val, $label])
-                    @php
-                        $current = request('filter', 'all'); // default = all
-                    @endphp
-
-                    <a href="{{ request()->fullUrlWithQuery(['filter' => $val]) }}"
-                        class="px-3 py-1.5 rounded-lg text-xs transition-all
-                {{ $current === $val ? 'bg-blue-900 text-white' : 'text-gray-500 hover:text-gray-800' }}">
-
-                        {{ $label }}
-                    </a>
-                @endforeach
-
-            </div>
-
-        </section>
-
-
-        <section class="flex flex-col gap-4">
-
-            <p class="text-[0.72rem] font-light text-gray-400">
-                Menampilkan <span class="font-medium text-gray-600">{{ $sessions->count() }}</span> sesi
-            </p>
-
-            @foreach ($sessions as $session)
+<div class="w-full">
+    <input type="text" wire:model.live="query" placeholder="Cari nama sesi..."
+        class="w-full pl-9 pr-4 py-2.5 text-sm font-light text-gray-900 bg-white border border-gray-200 rounded-xl placeholder-gray-300 focus:outline-none focus:border-blue-300 focus:ring-2 focus:ring-blue-100 transition-all duration-200">
+    @if ($query)
+        <div class="">
+            @forelse($sessions as $session)
                 <div
-                    class="bg-white border border-gray-200 rounded-2xl overflow-hidden hover:border-gray-300 transition-colors">
+                    class="bg-white border border-gray-200 mt-5 rounded-2xl overflow-hidden hover:border-gray-300 transition-colors">
                     <div class="flex">
 
                         <div @class([
@@ -140,11 +101,7 @@
                                             <path d="M2 10c0-2.21 1.79-4 4-4s4 1.79 4 4" stroke="currentColor"
                                                 stroke-width="1.2" stroke-linecap="round" />
                                         </svg>
-                                        <span class="text-[0.72rem] font-light text-gray-400">
-                                            <span class="font-medium text-gray-600">{{ $session->present_count }}</span>
-                                            /
-                                            {{ $totalUsers }} hadir
-                                        </span>
+
                                     </div>
                                 </div>
 
@@ -203,83 +160,16 @@
                         </div>
                     </div>
                 </div>
-            @endforeach
-
-
-            {{-- ── EMPTY STATE — uncomment when list is empty ── --}}
-            {{--
-            <div class="flex flex-col items-center justify-center gap-5 py-24 text-center">
-                <div class="w-16 h-16 rounded-2xl bg-white border border-gray-200 flex items-center justify-center">
-                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" class="text-gray-300">
-                        <rect x="3" y="3" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.4" />
-                        <rect x="13" y="3" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.4" />
-                        <rect x="3" y="13" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.4" />
-                        <path d="M16 17h2M18 15v2M18 17v2M20 17h-2" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
-                    </svg>
+            @empty
+                <div class="p-3 text-sm text-gray-400">
+                    Tidak ada sesi ditemukan
                 </div>
-                <div>
-                    <p class="text-sm font-medium text-gray-500">Belum ada sesi</p>
-                    <p class="text-[0.75rem] font-light text-gray-400 mt-1">Mulai dengan membuat sesi baru</p>
-                </div>
-                <a href="{{ route('admin.sessions.create') }}"
-                    class="flex items-center gap-2 px-5 py-2.5 bg-blue-900 hover:bg-blue-950 text-white text-sm font-normal rounded-xl transition-all duration-200 hover:-translate-y-px no-underline">
-                    <svg width="13" height="13" viewBox="0 0 12 12" fill="none">
-                        <path d="M6 2v8M2 6h8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" />
-                    </svg>
-                    Buat Sesi
-                </a>
-            </div>
-            --}}
+            @endforelse
+        </div>
+    @endif
 
-        </section>
-
-
-        <section class="flex items-center justify-between flex-wrap gap-4">
-
-            <p class="text-[0.72rem] font-light text-gray-400">
-                Halaman <span class="font-medium text-gray-600">1</span> dari <span
-                    class="font-medium text-gray-600">3</span>
-            </p>
-
-            <div class="flex items-center gap-1.5">
-                <a href="#"
-                    class="flex items-center justify-center w-8 h-8 border border-gray-200 rounded-lg text-gray-400 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-600 transition-colors no-underline">
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                        <path d="M8 3L5 6l3 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
-                            stroke-linejoin="round" />
-                    </svg>
-                </a>
-
-                @foreach ([1, 2, 3] as $page)
-                    <a href="#" @class([
-                        'flex items-center justify-center w-8 h-8 rounded-lg text-xs font-normal transition-colors no-underline',
-                        'bg-blue-900 text-white border border-blue-900' => $page === 1,
-                        'border border-gray-200 text-gray-500 hover:bg-gray-50 hover:border-gray-300' =>
-                            $page !== 1,
-                    ])>
-                        {{ $page }}
-                    </a>
-                @endforeach
-
-                <a href="#"
-                    class="flex items-center justify-center w-8 h-8 border border-gray-200 rounded-lg text-gray-400 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-600 transition-colors no-underline">
-                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                        <path d="M4 3l3 3-3 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
-                            stroke-linejoin="round" />
-                    </svg>
-                </a>
-            </div>
-
-        </section>
-
-
-        <footer class="text-center pt-2 pb-4">
-            <p class="text-[0.65rem] font-light text-gray-300 tracking-widest">
-                &copy; {{ date('Y') }} TipsenKuy · Built with Laravel &amp; Tailwind CSS
-            </p>
-        </footer>
-
-
-    </main>
-
-</x-layout-main>
+    <!-- ⏳ Loading -->
+    <div wire:loading class="text-sm text-gray-400 mt-2">
+        Searching...
+    </div>
+</div>
