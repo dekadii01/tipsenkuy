@@ -268,9 +268,10 @@
                             </div>
 
                             <div class="flex-1 min-w-0">
-                                <p class="text-sm font-normal text-gray-800 truncate">
+                                <a href="{{ route('session.detail', $record->session->id) }}"
+                                    class="text-sm font-normal text-gray-800 truncate">
                                     {{ $record->session->nama_sesi }}
-                                </p>
+                                </a>
                                 <p class="text-[0.72rem] font-light text-gray-400 mt-0.5">
                                     {{ $record->session->tanggal->translatedFormat('d F Y') }}
                                 </p>

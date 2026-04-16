@@ -151,20 +151,21 @@
 
                                     <div class="flex flex-col items-end gap-1.5 shrink-0">
                                         <p class="text-sm font-light text-gray-900">
-                                            <span class="font-medium">{{ $present }}</span>
+                                            <span class="font-medium">{{ $presentCount }}</span>
                                             <span class="text-gray-400">/ {{ $allStudent }}</span>
                                         </p>
                                         <div class="w-24 h-[3px] rounded-full bg-gray-100 overflow-hidden">
                                             <div @class([
                                                 'h-full rounded-full',
-                                                'bg-blue-900' => $active,
-                                                'bg-gray-300' => !$active,
+                                                'bg-blue-900' => $activeCount,
+                                                'bg-gray-300' => !$activeCount,
                                             ])
-                                                style="width: {{ $allStudent > 0 ? round(($present / $allStudent) * 100) : 0 }}%">
+                                                style="width: {{ $allStudent > 0 ? round(($presentCount / $allStudent) * 100) : 0 }}%">
                                             </div>
                                         </div>
                                         <span class="text-[0.65rem] font-light text-gray-400">
-                                            {{ $allStudent > 0 ? round(($present / $allStudent) * 100) : 0 }}% hadir
+                                            {{ $allStudent > 0 ? round(($presentCount / $allStudent) * 100) : 0 }}%
+                                            hadir
                                         </span>
                                     </div>
 
