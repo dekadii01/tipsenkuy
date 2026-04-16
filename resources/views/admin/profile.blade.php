@@ -141,7 +141,7 @@
                             admin</p>
                     </div>
 
-                    <form method="POST" action="" class="px-7 py-6 flex flex-col gap-5">
+                    <form method="POST" action="{{ route('admin.profile.update') }}" class="px-7 py-6 flex flex-col gap-5">
                         @csrf
                         @method('PATCH')
 
@@ -230,7 +230,7 @@
                         </p>
                     </div>
 
-                    <form method="POST" action="" class="px-7 py-6 flex flex-col gap-5">
+                    <form method="POST" action="{{ route('admin.profile.password') }}" class="px-7 py-6 flex flex-col gap-5">
                         @csrf
                         @method('PUT')
 
@@ -251,10 +251,10 @@
                                 <label for="password" class="text-xs font-normal text-gray-600 tracking-wide">
                                     Password baru <span class="text-red-400">*</span>
                                 </label>
-                                <input id="password" type="password" name="password" placeholder="Min. 8 karakter"
+                                <input id="new_password" type="password" name="new_password" placeholder="Min. 8 karakter"
                                     autocomplete="new-password" required
                                     class="w-full px-4 py-2.5 text-sm font-light text-gray-900 bg-gray-50 border border-gray-200 rounded-xl placeholder-gray-300 focus:outline-none focus:border-blue-300 focus:bg-white focus:ring-2 focus:ring-blue-100 transition-all duration-200">
-                                @error('password', 'updatePassword')
+                                @error('new_password', 'updatePassword')
                                     <p class="text-[0.72rem] font-light text-red-500">{{ $message }}</p>
                                 @enderror
                             </div>
@@ -263,7 +263,7 @@
                                     class="text-xs font-normal text-gray-600 tracking-wide">
                                     Konfirmasi password <span class="text-red-400">*</span>
                                 </label>
-                                <input id="password_confirmation" type="password" name="password_confirmation"
+                                <input id="new_password_confirmation" type="password" name="new_password_confirmation"
                                     placeholder="Ulangi password baru" autocomplete="new-password" required
                                     class="w-full px-4 py-2.5 text-sm font-light text-gray-900 bg-gray-50 border border-gray-200 rounded-xl placeholder-gray-300 focus:outline-none focus:border-blue-300 focus:bg-white focus:ring-2 focus:ring-blue-100 transition-all duration-200">
                                 @error('password_confirmation', 'updatePassword')
