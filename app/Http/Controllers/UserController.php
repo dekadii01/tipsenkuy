@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Attendance;
 use App\Models\ClassSession;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 
@@ -41,8 +42,8 @@ class UserController extends Controller
 
         $validated = $request->validate([
             'first_name' => 'required|string|max:255',
-            'last_name'  => 'nullable|string|max:255',
-            'email'      => 'required|email|max:255|unique:users,email,' . $user->id,
+            'last_name' => 'nullable|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email,'.$user->id,
         ]);
 
         $user->update($validated);
@@ -56,10 +57,9 @@ class UserController extends Controller
         /** @var User $user */
         $user = Auth::user();
 
-
         $request->validate([
             'current_password' => 'required|current_password',
-            'password'         => ['required', 'confirmed', Password::min(8)],
+            'password' => ['required', 'confirmed', Password::min(8)],
         ]);
 
         $user->update([
@@ -84,9 +84,9 @@ class UserController extends Controller
 
         // Map status DB ke status yang dipakai Blade
         $sessionStatus = match ($session->status) {
-            'active'  => 'active',
-            'ended'   => 'ended',
-            default   => 'upcoming', // pending
+            'active' => 'active',
+            'ended' => 'ended',
+            default => 'upcoming', // pending
         };
 
         return view('user/sessiondetail', compact(
@@ -123,11 +123,30 @@ class UserController extends Controller
         return view('user/scanqr');
     }
 
-    public function history()
+    public function history(Request $request)
     {
-        $history = ClassSession::all();
+        // get data kehadiran user yang sudah di-scan, urutkan berdasarkan tanggal scan terbaru
+        $history = Attendance::where('user_id', Auth::id())
+            ->with('session')
+            ->latest('scanned_at')
+            ->get();
 
-        return view('user/history', compact('history'));
+        // Grouping Berdasarkan Tanggal untuk di UI
+        $groupedHistory = $history
+            ->groupBy(function ($item) {
+                return Carbon::parse($item->session->tanggal)->format('Y-m-d');
+            })
+            ->sortKeysDesc()->when($request->filter === 'hadir', function ($grouped) {
+                return $grouped->map(function ($items) {
+                    return $items->where('status', 'present');
+                })->filter(fn ($items) => $items->isNotEmpty());
+            })->when($request->filter === 'absen', function ($grouped) {
+                return $grouped->map(function ($items) {
+                    return $items->where('status', 'absent');
+                })->filter(fn ($items) => $items->isNotEmpty());
+            });
+
+        return view('user/history', compact('history', 'groupedHistory'));
     }
 
     public function mySessions()
