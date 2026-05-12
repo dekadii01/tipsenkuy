@@ -2,7 +2,7 @@
 
     <x-navbar-auth-user />
 
-    <main class="max-w-2xl mx-auto px-6 py-10 flex flex-col gap-6">
+    <main class="max-w-5xl mx-auto px-6 py-10 flex flex-col gap-6">
 
 
         <section class="flex flex-col gap-2">
@@ -294,7 +294,7 @@
                                 stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                         <span class="text-xs font-light text-green-700">Tercatat pukul
-                            {{ $attendance->scanned_at->format('H:i') }} WIB</span>
+                            {{ $attendance->scanned_at }} WIB</span>
                     </div>
                 @elseif ($sessionStatus === 'upcoming')
                     <div class="flex flex-col items-center gap-2 text-center">

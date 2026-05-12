@@ -2,7 +2,7 @@
 
     <x-navbar-admin />
 
-    <main class="max-w-6xl mx-auto py-10 flex flex-col gap-8">
+    <main class="max-w-5xl mx-auto px-6 py-10 flex flex-col gap-8">
 
 
         <section class="flex flex-col gap-2">
@@ -16,7 +16,7 @@
                     <path d="M3.5 2l3 3-3 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
                         stroke-linejoin="round" />
                 </svg>
-                <a href=""
+                <a href="{{ route('admin.attendance.index') }}"
                     class="text-xs font-light text-gray-400 hover:text-gray-600 transition-colors no-underline">
                     Sesi
                 </a>

@@ -58,7 +58,7 @@
                                     class="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50">
                                     📊 Dashboard
                                 </a>
-                                <a href=""
+                                <a href="{{ route('admin.profile') }}"
                                     class="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50">
                                     👤 Profile
                                 </a>
@@ -104,7 +104,7 @@
                                     class="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50">
                                     📊 Dashboard
                                 </a>
-                                <a href=""
+                                <a href="{{ route('user.profile') }}"
                                     class="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50">
                                     👤 Profile
                                 </a>

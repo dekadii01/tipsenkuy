@@ -26,14 +26,14 @@ Route::put('/admin/profile/password', [AdminController::class, 'updatePassword']
 // Protected Routes
 Route::middleware(['auth', 'user'])->group(function () {
     // User Routes
-    Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard-user');
+    Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard-user')->middleware('auth');
     Route::get('/scanqr', [UserController::class, 'showScanQR'])->name('attendance.scan')->middleware('auth');
     Route::get('/scan', [ScanQrController::class, 'show'])->name('scan.show');
-    Route::post('/scan', [ScanQrController::class, 'process'])->name('scan.process');
+    Route::post('/scan', [ScanQrController::class, 'process'])->name('scan.process')->middleware('auth');
     Route::get('/history', [UserController::class, 'history'])->name('attendance.user.history')->middleware('auth');
     Route::get('/sessions', [UserController::class, 'mySessions'])->name('my-sessions')->middleware('auth');
     Route::get('/profile', [UserController::class, 'profile'])->name('user.profile')->middleware('auth');
-    Route::patch('/profile', [UserController::class, 'updateProfile'])->name('user.profile.update');
+    Route::patch('/profile', [UserController::class, 'updateProfile'])->name('user.profile.update')->middleware('auth');
     Route::put('/profile/password', [UserController::class, 'updatePassword'])->name('user.profile.password');
     Route::get('/sessions/{session}', [UserController::class, 'sessionDetail'])->name('session.detail')->middleware('auth');
 });

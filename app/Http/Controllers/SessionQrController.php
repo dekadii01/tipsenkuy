@@ -12,19 +12,19 @@ class SessionQrController extends Controller
 {
     public function generate(Request $request, ClassSession $session)
     {
-        // 🔒 1. Validasi durasi dari form
+        //  Validasi durasi dari form
         $request->validate([
             'durasi_qr' => 'required|in:5,10,15,30'
         ]);
 
-        // ❌ 2. Cegah generate jika session sudah ended
+        //  Cegah generate jika session sudah ended
         if ($session->status === 'ended') {
             return back()->withErrors([
                 'message' => 'Session sudah berakhir'
             ]);
         }
 
-        // 🔥 3. Nonaktifkan semua QR lama
+        //  Nonaktifkan semua QR lama
         QrsSession::where('session_id', $session->id)
             ->where('is_active', true)
             ->update([
@@ -32,14 +32,14 @@ class SessionQrController extends Controller
                 'updated_at' => now()
             ]);
 
-        // 🔐 4. Generate token unik
+        //  Generate token unik
         $token = (string) Str::uuid();
 
-        // ⏳ 5. Hitung expired berdasarkan input user
+        //  Hitung expired berdasarkan input user
         $duration = (int) $request->durasi_qr;
         $expiredAt = Carbon::now()->addMinutes($duration);
 
-        // 💾 6. Simpan QR baru
+        //  Simpan QR baru
         $qr = QrsSession::create([
             'session_id' => $session->id,
             'token' => $token,
@@ -47,14 +47,14 @@ class SessionQrController extends Controller
             'is_active' => true,
         ]);
 
-        // 🚀 7. Aktifkan session (jika belum)
+        //  Aktifkan session (jika belum)
         if ($session->status !== 'active') {
             $session->update([
                 'status' => 'active'
             ]);
         }
 
-        // 🎯 8. Response (bisa JSON atau redirect)
+        //  Response (bisa JSON atau redirect)
         return back()->with([
             'success' => 'QR berhasil dibuat',
             'qr_token' => $qr->token,

@@ -43,7 +43,7 @@ class UserController extends Controller
         $validated = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'nullable|string|max:255',
-            'email' => 'required|email|max:255|unique:users,email,'.$user->id,
+            'email' => 'required|email|max:255|unique:users,email,' . $user->id,
         ]);
 
         $user->update($validated);
@@ -139,11 +139,11 @@ class UserController extends Controller
             ->sortKeysDesc()->when($request->filter === 'hadir', function ($grouped) {
                 return $grouped->map(function ($items) {
                     return $items->where('status', 'present');
-                })->filter(fn ($items) => $items->isNotEmpty());
+                })->filter(fn($items) => $items->isNotEmpty());
             })->when($request->filter === 'absen', function ($grouped) {
                 return $grouped->map(function ($items) {
                     return $items->where('status', 'absent');
-                })->filter(fn ($items) => $items->isNotEmpty());
+                })->filter(fn($items) => $items->isNotEmpty());
             });
 
         return view('user/history', compact('history', 'groupedHistory'));
