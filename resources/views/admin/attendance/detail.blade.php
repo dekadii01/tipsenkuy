@@ -8,7 +8,7 @@
         <section class="flex flex-col gap-3">
 
             <nav class="flex items-center gap-1.5 flex-wrap">
-                <a href="{{ route('dashboard-admin') }}"
+                <a href="{{ route('admin.dashboard') }}"
                     class="text-xs font-light text-gray-400 hover:text-gray-600 transition-colors no-underline">
                     Dashboard
                 </a>
@@ -352,7 +352,6 @@
                 <div class="px-6 overflow-y-auto max-h-96">
 
                     @foreach ($allStudentname as $student)
-
                         <div class="participant flex items-center gap-3.5 py-3 border-b border-gray-100"
                             data-status="{{ $attendances->contains('user_id', $student->id) ? 'present' : 'absent' }}">
                             <div
@@ -444,31 +443,31 @@
 
 
 
-       if (totalBtn && presentBtn) {
-    totalBtn.addEventListener('click', () => {
-        participants.forEach(p => {
-            p.style.display = 'flex';
-        });
+        if (totalBtn && presentBtn) {
+            totalBtn.addEventListener('click', () => {
+                participants.forEach(p => {
+                    p.style.display = 'flex';
+                });
 
-        // active style
-        totalBtn.classList.add('ring', 'ring-gray-300');
-        presentBtn.classList.remove('ring', 'ring-blue-300');
-    });
+                // active style
+                totalBtn.classList.add('ring', 'ring-gray-300');
+                presentBtn.classList.remove('ring', 'ring-blue-300');
+            });
 
-    presentBtn.addEventListener('click', () => {
-        participants.forEach(p => {
-            if (p.dataset.status === 'present') {
-                p.style.display = 'flex';
-            } else {
-                p.style.display = 'none';
-            }
-        });
+            presentBtn.addEventListener('click', () => {
+                participants.forEach(p => {
+                    if (p.dataset.status === 'present') {
+                        p.style.display = 'flex';
+                    } else {
+                        p.style.display = 'none';
+                    }
+                });
 
-        // active style
-        presentBtn.classList.add('ring', 'ring-blue-300');
-        totalBtn.classList.remove('ring', 'ring-gray-300');
-    });
-}
+                // active style
+                presentBtn.classList.add('ring', 'ring-blue-300');
+                totalBtn.classList.remove('ring', 'ring-gray-300');
+            });
+        }
     </script>
 
 </x-layout-main>

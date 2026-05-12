@@ -19,10 +19,16 @@ class UserController extends Controller
         return view('index');
     }
 
-    public function indexChat(ClassSession $session)
+    public function indexDiscussion(ClassSession $session)
     {
         return view('user/discussion', compact('session'));
     }
+
+    public function showDiscussion(ClassSession $session, $threadId)
+    {
+        return view('user/discussiondetail', compact('session', 'threadId'));
+    }
+
     public function showLogin()
     {
         return view('auth/login');

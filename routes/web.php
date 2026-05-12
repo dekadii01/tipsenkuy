@@ -2,55 +2,66 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\RealTimeController;
 use App\Http\Controllers\ScanQrController;
 use App\Http\Controllers\SessionQrController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
+// ── Public ──────────────────────────────────────────────────────
 Route::get('/', [UserController::class, 'index'])->name('home');
-
-// Authentication Routes
 Route::get('/login', [UserController::class, 'showLogin'])->name('login');
 Route::get('/register', [UserController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
-Route::post('/logout', [AuthController::class, 'logout'])
-    ->name('logout');
-Route::post('/login', [AuthController::class, 'login'])
-    ->name('login');
-Route::patch('/admin/profile', [AdminController::class, 'updateProfile'])
-    ->name('admin.profile.update');
-Route::put('/admin/profile/password', [AdminController::class, 'updatePassword'])
-    ->name('admin.profile.password');
+Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-
-// Protected Routes
+// ── User (auth + role user) ──────────────────────────────────────
 Route::middleware(['auth', 'user'])->group(function () {
-    // User Routes
-    Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard-user')->middleware('auth');
-    Route::get('/scanqr', [UserController::class, 'showScanQR'])->name('attendance.scan')->middleware('auth');
-    Route::get('/scan', [ScanQrController::class, 'show'])->name('scan.show');
-    Route::post('/scan', [ScanQrController::class, 'process'])->name('scan.process')->middleware('auth');
-    Route::get('/history', [UserController::class, 'history'])->name('attendance.user.history')->middleware('auth');
-    Route::get('/sessions', [UserController::class, 'mySessions'])->name('my-sessions')->middleware('auth');
-    Route::get('/profile', [UserController::class, 'profile'])->name('user.profile')->middleware('auth');
-    Route::patch('/profile', [UserController::class, 'updateProfile'])->name('user.profile.update')->middleware('auth');
+
+    // Dashboard & misc
+    Route::get('/dashboard', [UserController::class, 'dashboard'])->name('dashboard-user');
+    Route::get('/history', [UserController::class, 'history'])->name('attendance.user.history');
+    Route::get('/sessions', [UserController::class, 'mySessions'])->name('my-sessions');
+
+    // Profile
+    Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');
+    Route::patch('/profile', [UserController::class, 'updateProfile'])->name('user.profile.update');
     Route::put('/profile/password', [UserController::class, 'updatePassword'])->name('user.profile.password');
-    Route::get('/sessions/{session}', [UserController::class, 'sessionDetail'])->name('session.detail')->middleware('auth');
-    Route::get('/session/{session}/chat', [UserController::class, 'indexChat'])->name('session.chat.user')->middleware('auth');
+
+    // Scan QR
+    Route::get('/scanqr', [UserController::class, 'showScanQR'])->name('attendance.scan');
+    Route::get('/scan', [ScanQrController::class, 'show'])->name('scan.show');
+    Route::post('/scan', [ScanQrController::class, 'process'])->name('scan.process');
+
+    // Session detail
+    Route::get('/sessions/{session}', [UserController::class, 'sessionDetail'])->name('session.detail');
+
+    // Diskusi — semua di bawah /sessions/{session}/discussion
+    Route::prefix('/sessions/{session}/discussion')->name('session.discussion.')->group(function () {
+        Route::get('/', [UserController::class, 'indexDiscussion'])->name('index');
+        Route::post('/', [UserController::class, 'storeDiscussion'])->name('store');
+        Route::get('/{thread}', [UserController::class, 'showDiscussion'])->name('show');
+        Route::post('/{thread}/reply', [UserController::class, 'storeReply'])->name('reply');
+    });
 });
 
+// ── Admin (auth + role admin) ────────────────────────────────────
+Route::middleware(['auth', 'admin'])->prefix('/admin')->name('admin.')->group(function () {
 
+    // Dashboard & misc
+    Route::get('/', [AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/profile', [AdminController::class, 'profile'])->name('profile');
+    Route::patch('/profile', [AdminController::class, 'updateProfile'])->name('profile.update');
+    Route::put('/profile/password', [AdminController::class, 'updatePassword'])->name('profile.password');
 
-Route::middleware(['auth', 'admin'])->group(function () {
-    // Admin Routes
-    Route::get('/admin', [AdminController::class, 'dashboard'])->name('dashboard-admin');
-    Route::get('/admin/attendance', [AdminController::class, 'attendanceIndex'])->name('admin.attendance.index')->middleware('auth');
-    Route::get('/admin/attendance/{id}', [AdminController::class, 'showAttendanceDetail'])->name('admin.attendance.detail')->middleware('auth');
-    Route::get('/admin/create-attendance', [AdminController::class, 'showCreateAttendance'])->name('admin.attendance.create')->middleware('auth');
-    Route::post('/admin/create-attendance', [AdminController::class, 'createAttendance'])->name('admin.attendance.store')->middleware('auth');
-    Route::post('/admin/sessions/{session}/generate-qr', [SessionQrController::class, 'generate'])->name('admin.sessions.generate-qr')->middleware('auth');
-    Route::patch('/admin/sessions/{session}/end', [AdminController::class, 'endSession'])->name('admin.sessions.end')->middleware('auth');
-    Route::patch('/admin/sessions/{session}/start', [AdminController::class, 'startSession'])->name('admin.sessions.start')->middleware('auth');
-    Route::get('/admin/profile', [AdminController::class, 'profile'])->name('admin.profile')->middleware('auth');
+    // Attendance / Sessions
+    Route::get('/attendance', [AdminController::class, 'attendanceIndex'])->name('attendance.index');
+    Route::get('/attendance/{id}', [AdminController::class, 'showAttendanceDetail'])->name('attendance.detail');
+    Route::get('/create-attendance', [AdminController::class, 'showCreateAttendance'])->name('attendance.create');
+    Route::post('/create-attendance', [AdminController::class, 'createAttendance'])->name('attendance.store');
+
+    // Session controls
+    Route::post('/sessions/{session}/generate-qr', [SessionQrController::class, 'generate'])->name('sessions.generate-qr');
+    Route::patch('/sessions/{session}/end', [AdminController::class, 'endSession'])->name('sessions.end');
+    Route::patch('/sessions/{session}/start', [AdminController::class, 'startSession'])->name('sessions.start');
 });

@@ -435,7 +435,7 @@
                         </div>
 
                         {{-- CTA button --}}
-                        <a href="{{ route('session.chat.user', $session->id) }}"
+                        <a href="{{ route('session.discussion.index', $session->id) }}"
                             class="w-full flex items-center justify-center gap-2 py-2.5 bg-blue-900 hover:bg-blue-950 text-white text-sm font-normal rounded-xl transition-all duration-200 hover:-translate-y-px no-underline">
                             <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
                                 <path d="M14 10a2 2 0 0 1-2 2H5l-3 3V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v6z"
