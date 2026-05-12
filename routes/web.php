@@ -63,7 +63,7 @@ Route::middleware(['auth', 'admin'])->prefix('/admin')->name('admin.')->group(fu
     // Discussion
     Route::prefix('/attendance/{id}/discussions')->name('attendance.discussions.')->group(function () {
         Route::get('/', [AdminController::class, 'indexDiscussion'])->name('index');
-        // Tambahkan route lain untuk diskusi admin jika diperlukan
+        Route::get('/{thread}', [AdminController::class, 'showDiscussion'])->name('show');
     });
 
     // Session controls

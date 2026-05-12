@@ -47,9 +47,17 @@ class AdminController extends Controller
         return view('admin/discussion/index');
     }
 
+    public function showDiscussion($thread)
+    {
+        return view('admin/discussion/detail', [
+            'threadId' => $thread
+        ]);
+    }
+
     //Update profil admin (nama & email)
     public function updateProfile(Request $request)
-    {        /** @var User $admin */
+    {
+        /** @var User $admin */
         $admin = Auth::user();
 
         $validated = $request->validate([
@@ -67,7 +75,8 @@ class AdminController extends Controller
 
     //Update Password Admin
     public function updatePassword(Request $request)
-    {        /** @var User $admin */
+    {
+        /** @var User $admin */
         $admin = Auth::user();
 
         $request->validate([
@@ -137,7 +146,7 @@ class AdminController extends Controller
         $qrSvg = null;
 
         if ($activeQr) {
-            $qrUrl = url('/scan?token='.$activeQr->token);
+            $qrUrl = url('/scan?token=' . $activeQr->token);
             $qrSvg = QrCode::size(220)->generate($qrUrl);
         }
 

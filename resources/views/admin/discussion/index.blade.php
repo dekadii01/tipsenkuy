@@ -249,8 +249,9 @@
                                         @endif
                                     </div>
 
-                                    <p class="text-sm font-medium text-gray-900 leading-snug">{{ $thread['title'] }}
-                                    </p>
+                                    <a href="{{ route('admin.attendance.discussions.show', ['id' => 1, 'thread' => 1]) }}"
+                                        class="text-sm font-medium text-gray-900 leading-snug">{{ $thread['title'] }}
+                                    </a>
                                     <p class="text-xs font-light text-gray-500 leading-relaxed line-clamp-2">
                                         {{ $thread['body'] }}</p>
 
