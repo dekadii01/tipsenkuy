@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\RealTimeController;
 use App\Http\Controllers\ScanQrController;
 use App\Http\Controllers\SessionQrController;
 use App\Http\Controllers\UserController;
@@ -36,6 +37,7 @@ Route::middleware(['auth', 'user'])->group(function () {
     Route::patch('/profile', [UserController::class, 'updateProfile'])->name('user.profile.update')->middleware('auth');
     Route::put('/profile/password', [UserController::class, 'updatePassword'])->name('user.profile.password');
     Route::get('/sessions/{session}', [UserController::class, 'sessionDetail'])->name('session.detail')->middleware('auth');
+    Route::get('/session/{session}/chat', [UserController::class, 'indexChat'])->name('session.chat.user')->middleware('auth');
 });
 
 

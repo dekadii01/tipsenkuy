@@ -19,6 +19,10 @@ class UserController extends Controller
         return view('index');
     }
 
+    public function indexChat(ClassSession $session)
+    {
+        return view('user/discussion', compact('session'));
+    }
     public function showLogin()
     {
         return view('auth/login');
