@@ -2,7 +2,7 @@
 
     <x-navbar-auth-user />
 
-    <main class="max-w-6xl mx-auto px-6 py-10 flex flex-col gap-6">
+    <main class="max-w-5xl mx-auto px-6 py-10 flex flex-col gap-6">
 
         {{-- ── BREADCRUMB & HEADER ── --}}
         <section class="flex flex-col gap-2">
@@ -19,14 +19,14 @@
                     <path d="M3.5 2l3 3-3 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
                         stroke-linejoin="round" />
                 </svg>
-                <a href="{{ route('session.detail', $session->id ?? 1) }}"
+                <a href="{{ route('session.detail', ['session' => 1]) }}"
                     class="text-xs font-light text-gray-400 hover:text-gray-600 transition-colors no-underline">Detail
                     Sesi</a>
                 <svg width="10" height="10" viewBox="0 0 10 10" fill="none" class="text-gray-300">
                     <path d="M3.5 2l3 3-3 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
                         stroke-linejoin="round" />
                 </svg>
-                <a href=""
+                <a href="{{ route('session.discussion.index', ['session' => 1]) }}"
                     class="text-xs font-light text-gray-400 hover:text-gray-600 transition-colors no-underline">Diskusi</a>
                 <svg width="10" height="10" viewBox="0 0 10 10" fill="none" class="text-gray-300">
                     <path d="M3.5 2l3 3-3 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"

@@ -60,6 +60,12 @@ Route::middleware(['auth', 'admin'])->prefix('/admin')->name('admin.')->group(fu
     Route::get('/create-attendance', [AdminController::class, 'showCreateAttendance'])->name('attendance.create');
     Route::post('/create-attendance', [AdminController::class, 'createAttendance'])->name('attendance.store');
 
+    // Discussion
+    Route::prefix('/attendance/{id}/discussions')->name('attendance.discussions.')->group(function () {
+        Route::get('/', [AdminController::class, 'indexDiscussion'])->name('index');
+        // Tambahkan route lain untuk diskusi admin jika diperlukan
+    });
+
     // Session controls
     Route::post('/sessions/{session}/generate-qr', [SessionQrController::class, 'generate'])->name('sessions.generate-qr');
     Route::patch('/sessions/{session}/end', [AdminController::class, 'endSession'])->name('sessions.end');

@@ -25,7 +25,7 @@
                     <path d="M3.5 2l3 3-3 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
                         stroke-linejoin="round" />
                 </svg>
-                <a href=""
+                <a href="{{ route('session.detail', $session->id) }}"
                     class="text-xs font-light text-gray-400 hover:text-gray-600 transition-colors no-underline">
                     Detail Sesi
                 </a>
@@ -45,7 +45,7 @@
                         Forum tanya jawab dan diskusi antara peserta dan dosen
                     </p>
                 </div>
-                <a href=""
+                <a href="{{ route('session.detail', $session->id) }}"
                     class="flex items-center gap-1.5 px-3 py-1.5 border border-gray-200 hover:bg-gray-50 hover:border-gray-300 text-xs font-light text-gray-600 rounded-xl transition-colors no-underline self-start shrink-0">
                     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" class="text-gray-400">
                         <path d="M8 3L4 6l4 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
@@ -174,7 +174,7 @@
             'answered' => false,
         ],
     ] as $thread)
-                        <a href=""
+                        <a href="{{ route('session.discussion.show', ['session' => $session->id, 'thread' => $thread['id']]) }}"
                             class="bg-white border border-gray-200 hover:border-gray-300 rounded-2xl overflow-hidden transition-colors no-underline group">
 
                             <div class="flex">

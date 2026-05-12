@@ -42,6 +42,11 @@ class AdminController extends Controller
         return view('admin/profile');
     }
 
+    public function indexDiscussion()
+    {
+        return view('admin/discussion/index');
+    }
+
     //Update profil admin (nama & email)
     public function updateProfile(Request $request)
     {        /** @var User $admin */
@@ -58,19 +63,19 @@ class AdminController extends Controller
         return back()->with('success', 'Profil berhasil diperbarui.');
     }
 
-    
+
 
     //Update Password Admin
     public function updatePassword(Request $request)
     {        /** @var User $admin */
-        $admin = Auth::user();  
+        $admin = Auth::user();
 
         $request->validate([
             'current_password' => 'required',
             'new_password' => ['required', Password::min(8)->mixedCase()->numbers()->symbols()],
             'new_password_confirmation' => 'required|same:new_password',
         ]);
-        
+
 
         if (!Hash::check($request->current_password, $admin->password)) {
             return back()->withErrors(['current_password' => 'Password saat ini tidak sesuai.']);

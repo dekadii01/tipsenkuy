@@ -25,7 +25,7 @@
                     <path d="M3.5 2l3 3-3 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
                         stroke-linejoin="round" />
                 </svg>
-                <span class="text-xs font-light text-gray-500">Detail</span>
+                <span class="text-xs font-light text-gray-500">Detail Sesi</span>
             </nav>
 
             <div class="flex items-start justify-between gap-4">
