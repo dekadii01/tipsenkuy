@@ -113,76 +113,19 @@
                     @endforeach
                 </div>
 
-
                 {{-- Thread list --}}
-                <div class="flex flex-col gap-3">
+                <div class="flex flex-col gap-3" id="thread-list">
 
-                    @foreach ([
-        [
-            'id' => 1,
-            'title' => 'Kapan tugas pemrograman SQL dikumpulkan?',
-            'body' => 'Saya ingin tahu deadline pengumpulan tugas SQL yang diberikan kemarin. Apakah ada tenggat waktu tertentu yang harus diperhatikan?',
-            'author' => 'Budi Santoso',
-            'role' => 'participant',
-            'time' => '10 menit lalu',
-            'replies' => 3,
-            'pinned' => false,
-            'answered' => true,
-        ],
-        [
-            'id' => 2,
-            'title' => 'Pengumuman: Materi pertemuan ke-4 sudah diunggah',
-            'body' => 'Slide dan modul untuk pertemuan ke-4 tentang normalisasi database sudah tersedia di portal. Silakan unduh sebelum kelas dimulai.',
-            'author' => 'Admin',
-            'role' => 'admin',
-            'time' => '1 jam lalu',
-            'replies' => 5,
-            'pinned' => true,
-            'answered' => false,
-        ],
-        [
-            'id' => 3,
-            'title' => 'Cara membuat foreign key yang benar di MySQL?',
-            'body' => 'Saya mencoba membuat relasi antar tabel menggunakan foreign key tapi selalu muncul error. Apakah ada yang bisa membantu?',
-            'author' => 'Citra Dewi',
-            'role' => 'participant',
-            'time' => '3 jam lalu',
-            'replies' => 7,
-            'pinned' => false,
-            'answered' => true,
-        ],
-        [
-            'id' => 4,
-            'title' => 'Perbedaan antara INNER JOIN dan LEFT JOIN',
-            'body' => 'Saya masih bingung dengan perbedaan INNER JOIN dan LEFT JOIN. Bisa dijelaskan dengan contoh sederhana?',
-            'author' => 'Dimas Rahardjo',
-            'role' => 'participant',
-            'time' => 'Kemarin',
-            'replies' => 2,
-            'pinned' => false,
-            'answered' => false,
-        ],
-        [
-            'id' => 5,
-            'title' => 'Reminder: Kuis minggu depan mencakup materi ERD',
-            'body' => 'Mohon dipersiapkan materi tentang Entity Relationship Diagram karena akan menjadi salah satu topik utama kuis minggu depan.',
-            'author' => 'Admin',
-            'role' => 'admin',
-            'time' => 'Kemarin',
-            'replies' => 1,
-            'pinned' => true,
-            'answered' => false,
-        ],
-    ] as $thread)
-                        <a href="{{ route('session.discussion.show', ['session' => $session->id, 'thread' => $thread['id']]) }}"
+                    @foreach ($threads as $thread)
+                        <a href="{{ route('session.discussion.show', ['session' => $session->id, 'thread' => $thread->id]) }}"
                             class="bg-white border border-gray-200 hover:border-gray-300 rounded-2xl overflow-hidden transition-colors no-underline group">
 
                             <div class="flex">
                                 {{-- Left accent --}}
                                 <div @class([
                                     'w-[3px] shrink-0',
-                                    'bg-blue-900' => $thread['role'] === 'admin',
-                                    'bg-gray-200' => $thread['role'] !== 'admin',
+                                    'bg-blue-900' => $thread->user->role === 'admin',
+                                    'bg-gray-200' => $thread->user->role !== 'admin',
                                 ])></div>
 
                                 <div class="flex-1 px-5 py-4 flex flex-col gap-2.5">
@@ -190,21 +133,20 @@
                                     {{-- Top row --}}
                                     <div class="flex items-start gap-2 flex-wrap">
 
-                                        {{-- Pinned badge --}}
-                                        @if ($thread['pinned'])
+                                        @if ($thread->is_pinned)
                                             <span
                                                 class="flex items-center gap-1 text-[0.62rem] font-light text-blue-700 bg-blue-50 border border-blue-200 rounded-full px-2 py-0.5 shrink-0">
                                                 <svg width="9" height="9" viewBox="0 0 10 10" fill="none">
                                                     <path d="M5 1v4M3 5h4M5 5v4" stroke="currentColor"
                                                         stroke-width="1.2" stroke-linecap="round" />
-                                                    <circle cx="5" cy="2" r="1" fill="currentColor" />
+                                                    <circle cx="5" cy="2" r="1"
+                                                        fill="currentColor" />
                                                 </svg>
                                                 Disematkan
                                             </span>
                                         @endif
 
-                                        {{-- Answered badge --}}
-                                        @if ($thread['answered'])
+                                        @if ($thread->is_answered)
                                             <span
                                                 class="flex items-center gap-1 text-[0.62rem] font-light text-green-700 bg-green-50 border border-green-200 rounded-full px-2 py-0.5 shrink-0">
                                                 <svg width="9" height="9" viewBox="0 0 10 10"
@@ -217,7 +159,7 @@
                                             </span>
                                         @endif
 
-                                        @if ($thread['role'] === 'admin')
+                                        @if ($thread->user->role === 'admin')
                                             <span
                                                 class="text-[0.62rem] font-light text-blue-800 bg-blue-50 border border-blue-200 rounded-full px-2 py-0.5 shrink-0">
                                                 Dosen / Admin
@@ -229,32 +171,33 @@
                                     {{-- Title --}}
                                     <p
                                         class="text-sm font-medium text-gray-900 group-hover:text-blue-900 transition-colors leading-snug">
-                                        {{ $thread['title'] }}
+                                        {{ $thread->title }}
                                     </p>
 
                                     {{-- Body preview --}}
                                     <p class="text-xs font-light text-gray-500 leading-relaxed line-clamp-2">
-                                        {{ $thread['body'] }}
+                                        {{ $thread->body }}
                                     </p>
 
                                     {{-- Footer --}}
                                     <div class="flex items-center justify-between gap-3 pt-1">
 
                                         <div class="flex items-center gap-2.5">
-                                            {{-- Author avatar --}}
                                             <div @class([
                                                 'w-5 h-5 rounded-md flex items-center justify-center text-[0.5rem] font-medium shrink-0',
-                                                'bg-blue-900 text-white' => $thread['role'] === 'admin',
+                                                'bg-blue-900 text-white' => $thread->user->role === 'admin',
                                                 'bg-blue-50 border border-blue-100 text-blue-900' =>
-                                                    $thread['role'] !== 'admin',
+                                                    $thread->user->role !== 'admin',
                                             ])>
-                                                {{ strtoupper(substr($thread['author'], 0, 2)) }}
+                                                {{ strtoupper(substr($thread->user->first_name, 0, 1) . substr($thread->user->last_name ?? '', 0, 1)) }}
                                             </div>
-                                            <span
-                                                class="text-[0.7rem] font-light text-gray-500">{{ $thread['author'] }}</span>
+                                            <span class="text-[0.7rem] font-light text-gray-500">
+                                                {{ $thread->user->first_name }} {{ $thread->user->last_name }}
+                                            </span>
                                             <span class="text-gray-300 text-xs">·</span>
-                                            <span
-                                                class="text-[0.7rem] font-light text-gray-400">{{ $thread['time'] }}</span>
+                                            <span class="text-[0.7rem] font-light text-gray-400">
+                                                {{ $thread->created_at->diffForHumans() }}
+                                            </span>
                                         </div>
 
                                         <div class="flex items-center gap-1.5 shrink-0">
@@ -264,9 +207,10 @@
                                                     stroke="currentColor" stroke-width="1.2"
                                                     stroke-linejoin="round" />
                                             </svg>
-                                            <span
-                                                class="text-[0.7rem] font-light text-gray-400">{{ $thread['replies'] }}
-                                                balasan</span>
+                                            <span class="text-[0.7rem] font-light text-gray-400"
+                                                id="reply-count-{{ $thread->id }}">
+                                                {{ $thread->replies_count }} balasan
+                                            </span>
                                         </div>
 
                                     </div>
@@ -282,32 +226,55 @@
                 {{-- Pagination --}}
                 <div class="flex items-center justify-between flex-wrap gap-4">
                     <p class="text-[0.72rem] font-light text-gray-400">
-                        Halaman <span class="font-medium text-gray-600">1</span> dari <span
-                            class="font-medium text-gray-600">3</span>
+                        Halaman <span class="font-medium text-gray-600">{{ $threads->currentPage() }}</span>
+                        dari <span class="font-medium text-gray-600">{{ $threads->lastPage() }}</span>
                     </p>
                     <div class="flex items-center gap-1.5">
-                        <a href="#"
-                            class="flex items-center justify-center w-8 h-8 border border-gray-200 rounded-lg text-gray-400 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-600 transition-colors no-underline">
-                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                                <path d="M8 3L5 6l3 3" stroke="currentColor" stroke-width="1.2"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </a>
-                        @foreach ([1, 2, 3] as $page)
-                            <a href="#" @class([
+                        @if ($threads->onFirstPage())
+                            <span
+                                class="flex items-center justify-center w-8 h-8 border border-gray-100 rounded-lg text-gray-300 cursor-not-allowed">
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                    <path d="M8 3L5 6l3 3" stroke="currentColor" stroke-width="1.2"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </span>
+                        @else
+                            <a href="{{ $threads->previousPageUrl() }}"
+                                class="flex items-center justify-center w-8 h-8 border border-gray-200 rounded-lg text-gray-400 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-600 transition-colors no-underline">
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                    <path d="M8 3L5 6l3 3" stroke="currentColor" stroke-width="1.2"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </a>
+                        @endif
+
+                        @foreach ($threads->getUrlRange(1, $threads->lastPage()) as $page => $url)
+                            <a href="{{ $url }}" @class([
                                 'flex items-center justify-center w-8 h-8 rounded-lg text-xs font-normal transition-colors no-underline',
-                                'bg-blue-900 text-white border border-blue-900' => $page === 1,
+                                'bg-blue-900 text-white border border-blue-900' =>
+                                    $page === $threads->currentPage(),
                                 'border border-gray-200 text-gray-500 hover:bg-gray-50 hover:border-gray-300' =>
-                                    $page !== 1,
+                                    $page !== $threads->currentPage(),
                             ])>{{ $page }}</a>
                         @endforeach
-                        <a href="#"
-                            class="flex items-center justify-center w-8 h-8 border border-gray-200 rounded-lg text-gray-400 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-600 transition-colors no-underline">
-                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                                <path d="M4 3l3 3-3 3" stroke="currentColor" stroke-width="1.2"
-                                    stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </a>
+
+                        @if ($threads->hasMorePages())
+                            <a href="{{ $threads->nextPageUrl() }}"
+                                class="flex items-center justify-center w-8 h-8 border border-gray-200 rounded-lg text-gray-400 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-600 transition-colors no-underline">
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                    <path d="M4 3l3 3-3 3" stroke="currentColor" stroke-width="1.2"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </a>
+                        @else
+                            <span
+                                class="flex items-center justify-center w-8 h-8 border border-gray-100 rounded-lg text-gray-300 cursor-not-allowed">
+                                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                                    <path d="M4 3l3 3-3 3" stroke="currentColor" stroke-width="1.2"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </span>
+                        @endif
                     </div>
                 </div>
 
@@ -368,10 +335,11 @@
                 <div class="bg-white border border-gray-200 rounded-2xl p-5 flex flex-col gap-3">
                     <h2 class="text-sm font-medium text-gray-900">Statistik Forum</h2>
                     <div class="grid grid-cols-2 gap-2">
-                        @foreach ([['14', 'Total thread'], ['38', 'Total balasan'], ['3', 'Belum dijawab'], ['5', 'Dari dosen']] as [$num, $label])
+                        @foreach ([['total_threads', $stats['total_threads'], 'Total thread'], ['total_replies', $stats['total_replies'], 'Total balasan'], ['unanswered', $stats['unanswered'], 'Belum dijawab'], ['from_admin', $stats['from_admin'], 'Dari dosen']] as [$key, $num, $label])
                             <div
                                 class="flex flex-col items-center gap-0.5 px-3 py-3 bg-gray-50 border border-gray-200 rounded-xl">
-                                <p class="text-base font-light text-gray-900">{{ $num }}</p>
+                                <p class="text-base font-light text-gray-900" data-stat="{{ $key }}">
+                                    {{ $num }}</p>
                                 <p class="text-[0.62rem] font-light text-gray-400 text-center leading-tight">
                                     {{ $label }}</p>
                             </div>
@@ -385,7 +353,7 @@
                         <h2 class="text-sm font-medium text-gray-900">Aktif di Forum</h2>
                         <span class="flex items-center gap-1 text-[0.65rem] font-light text-green-600">
                             <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
-                            4 online
+                            <span data-online-count>{{ $onlineCount ?? '?' }} online</span>
                         </span>
                     </div>
                     <div class="flex flex-col gap-2.5">
@@ -426,5 +394,169 @@
 
 
     </main>
+
+    <script>
+        // ── Realtime discussion index ──────────────────────────────
+
+        const SESSION_ID = {{ $session->id }};
+        const CURRENT_UID = {{ auth()->id() }};
+
+        let onlineCount = 0;
+
+        function initEcho() {
+            if (!window.Echo) {
+                setTimeout(initEcho, 100);
+                return;
+            }
+            // ── Presence channel session ──
+            window.Echo.join(`session.${SESSION_ID}`)
+                .here((users) => {
+                    onlineCount = users.length;
+                    renderOnline();
+                })
+                .joining(() => {
+                    onlineCount++;
+                    renderOnline();
+                })
+                .leaving(() => {
+                    onlineCount = Math.max(1, onlineCount - 1);
+                    renderOnline();
+                })
+                // Thread baru dibuat orang lain
+                .listen('.thread.posted', (e) => {
+                    prependThread(e.thread);
+                    bumpStat('total_threads');
+                })
+                // Reply baru di thread manapun → update badge di kartu
+                .listen('.reply.posted', (e) => {
+                    incrementReplyBadge(e.reply.thread_id);
+                    bumpStat('total_replies');
+                });
+        }
+        initEcho();
+
+        document.querySelector('form').addEventListener('submit', async function(e) {
+            e.preventDefault(); // cegah redirect
+
+            const form = e.target;
+            const data = new FormData(form);
+
+            const res = await fetch(form.action || window.location.href, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                },
+                body: new URLSearchParams(data),
+            });
+
+            if (res.ok) {
+                form.reset(); // kosongkan form
+            }
+        });
+
+        // ── Render online count ──
+        function renderOnline() {
+            document.querySelectorAll('[data-online-count]').forEach(el => {
+                el.textContent = onlineCount + ' online';
+            });
+        }
+
+        // ── Prepend thread card baru ──
+        function prependThread(thread) {
+            const list = document.getElementById('thread-list');
+            if (!list) return;
+
+            // Jika sedang di tab "mine", jangan tampilkan thread orang lain
+            const tab = new URLSearchParams(location.search).get('tab') || 'all';
+            if (tab === 'mine') return;
+
+            const isAdmin = thread.user.role === 'admin';
+            const accentClass = isAdmin ? 'bg-blue-900' : 'bg-gray-200';
+            const avatarClass = isAdmin ?
+                'bg-blue-900 text-white' :
+                'bg-blue-50 border border-blue-100 text-blue-900';
+
+            const el = document.createElement('a');
+            el.href = `/sessions/${SESSION_ID}/discussion/${thread.id}`;
+            el.className =
+                'bg-white border border-blue-200 hover:border-gray-300 rounded-2xl overflow-hidden transition-colors no-underline group realtime-new';
+            el.id = `thread-card-${thread.id}`;
+            el.innerHTML = `
+        <div class="flex">
+            <div class="w-[3px] shrink-0 ${accentClass}"></div>
+            <div class="flex-1 px-5 py-4 flex flex-col gap-2.5">
+                <div class="flex items-start gap-2 flex-wrap">
+                    <span class="flex items-center gap-1 text-[0.62rem] font-light text-blue-700 bg-blue-50 border border-blue-200 rounded-full px-2 py-0.5 shrink-0">
+                        Baru
+                    </span>
+                    ${isAdmin ? '<span class="text-[0.62rem] font-light text-blue-800 bg-blue-50 border border-blue-200 rounded-full px-2 py-0.5 shrink-0">Dosen / Admin</span>' : ''}
+                </div>
+                <p class="text-sm font-medium text-gray-900 group-hover:text-blue-900 transition-colors leading-snug">
+                    ${thread.title}
+                </p>
+                <p class="text-xs font-light text-gray-500 leading-relaxed line-clamp-2">
+                    ${thread.body}
+                </p>
+                <div class="flex items-center justify-between gap-3 pt-1">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-5 h-5 rounded-md flex items-center justify-center text-[0.5rem] font-medium shrink-0 ${avatarClass}">
+                            ${thread.user.initials}
+                        </div>
+                        <span class="text-[0.7rem] font-light text-gray-500">${thread.user.name}</span>
+                        <span class="text-gray-300 text-xs">·</span>
+                        <span class="text-[0.7rem] font-light text-gray-400">${thread.created_at}</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <svg width="12" height="12" viewBox="0 0 14 14" fill="none" class="text-gray-400">
+                            <path d="M12 8a2 2 0 0 1-2 2H4l-2 2V4a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v4z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
+                        </svg>
+                        <span class="text-[0.7rem] font-light text-gray-400" id="reply-count-${thread.id}">0 balasan</span>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+
+            list.prepend(el);
+            showToast(`Thread baru: "${thread.title.substring(0, 40)}..."`);
+
+            // Fade border biru setelah 5 detik
+            setTimeout(() => el.classList.remove('border-blue-200'), 5000);
+        }
+
+        // ── Increment reply badge di kartu thread ──
+        function incrementReplyBadge(threadId) {
+            const el = document.getElementById(`reply-count-${threadId}`);
+            if (!el) return;
+            const current = parseInt(el.textContent) || 0;
+            el.textContent = (current + 1) + ' balasan';
+            el.classList.add('text-blue-700');
+            setTimeout(() => el.classList.remove('text-blue-700'), 2000);
+        }
+
+        // ── Bump stat counter di sidebar ──
+        function bumpStat(key) {
+            const el = document.querySelector(`[data-stat="${key}"]`);
+            if (!el) return;
+            el.textContent = parseInt(el.textContent || '0') + 1;
+        }
+
+        // ── Toast notification ──
+        function showToast(msg) {
+            const existing = document.getElementById('rt-toast');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.id = 'rt-toast';
+            toast.className =
+                'fixed bottom-5 right-5 z-50 flex items-center gap-2.5 px-4 py-3 bg-white border border-gray-200 rounded-2xl shadow-sm text-xs font-light text-gray-700';
+            toast.innerHTML = `
+        <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse shrink-0"></span>
+        ${msg}`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 5000);
+        }
+    </script>
 
 </x-layout-main>

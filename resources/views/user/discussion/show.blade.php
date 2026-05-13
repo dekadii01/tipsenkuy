@@ -178,8 +178,8 @@
                 </div>
 
                 {{-- ── REPLIES ── --}}
-                <div class="flex flex-col gap-1">
-                    <p class="text-xs font-normal text-gray-500 px-1 mb-2">
+                <div class="flex flex-col gap-1" id="replies-container">
+                    <p class="text-xs font-normal text-gray-500 px-1 mb-2" id="reply-count">
                         {{ count($replies) }} Balasan
                     </p>
 
@@ -303,7 +303,9 @@
                             </span>
                         </div>
 
-                        <form method="POST" action="" class="flex flex-col gap-3">
+                        <form method="POST"
+                            action="{{ route('session.discussion.reply', [$session->id, $thread->id]) }}"
+                            id="form-reply" class="flex flex-col gap-3">
                             @csrf
 
                             {{-- Quote preview (shown when user clicks "Balas" on a reply) --}}
@@ -493,14 +495,13 @@
     </main>
 
     <script>
-        // ── Quote reply handler ──
-        function quoteReply(author, body) {
+        // ── Quote reply ──
+        function quoteReply(replyId, author, body) {
             document.getElementById('quote-preview').classList.remove('hidden');
             document.getElementById('quote-author').textContent = author;
             document.getElementById('quote-body').textContent = body;
+            document.getElementById('quote-reply-id').value = replyId;
             document.getElementById('reply-textarea').focus();
-
-            // Scroll ke form
             document.getElementById('reply-form').scrollIntoView({
                 behavior: 'smooth',
                 block: 'center'
@@ -512,6 +513,142 @@
             document.getElementById('quote-author').textContent = '';
             document.getElementById('quote-body').textContent = '';
             document.getElementById('quote-reply-id').value = '';
+        }
+
+        // ── Submit reply via AJAX ──
+        document.getElementById('form-reply').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const form = this;
+            const btn = form.querySelector('button[type=submit]');
+            const body = form.querySelector('textarea[name=body]').value.trim();
+
+            if (!body) return;
+
+            btn.disabled = true;
+            btn.textContent = 'Mengirim...';
+
+            try {
+                const res = await fetch(form.action, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content,
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        body: body,
+                        quote_reply_id: document.getElementById('quote-reply-id').value || null,
+                    }),
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    appendReply(data.reply, true); // true = own reply
+                    form.reset();
+                    clearQuote();
+                }
+            } catch (err) {
+                console.error(err);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Kirim Balasan';
+            }
+        });
+
+        // ── Render reply card ──
+        function appendReply(reply, isOwn = false) {
+            const container = document.getElementById('replies-container');
+            const isAdmin = reply.user.role === 'admin';
+
+            const quoteHtml = reply.quoted_reply ? `
+        <div class="px-3 py-2 bg-gray-50 border-l-2 border-blue-200 rounded-r-xl mb-2">
+            <p class="text-[0.65rem] font-normal text-blue-600">${reply.quoted_reply.author}</p>
+            <p class="text-[0.7rem] font-light text-gray-500 line-clamp-2">${reply.quoted_reply.body}</p>
+        </div>` : '';
+
+            const adminBadge = isAdmin ?
+                `<span class="text-[0.6rem] font-normal text-blue-700 bg-blue-50 border border-blue-200 rounded-full px-2 py-0.5">Admin</span>` :
+                '';
+
+            const avatarClass = isAdmin ?
+                'bg-blue-900 text-white' :
+                'bg-blue-50 border border-blue-100 text-blue-900';
+
+            // Hapus divider terakhir sebelum tambah yang baru
+            const lastDivider = container.querySelector('.reply-divider:last-child');
+            if (lastDivider) lastDivider.remove();
+
+            const el = document.createElement('div');
+            el.className = 'flex gap-3';
+            el.id = `reply-${reply.id}`;
+            el.innerHTML = `
+        <div class="flex flex-col items-center pt-1 shrink-0">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center text-[0.65rem] font-semibold shrink-0 ${avatarClass}">
+                ${reply.user.initials}
+            </div>
+        </div>
+        <div class="flex-1 mb-3 rounded-2xl overflow-hidden border border-gray-200 bg-white">
+            <div class="p-4 flex flex-col gap-3">
+                <div class="flex items-center justify-between gap-2 flex-wrap">
+                    <div class="flex items-center gap-2">
+                        <p class="text-sm font-normal text-gray-800">${reply.user.name}</p>
+                        ${adminBadge}
+                        ${isOwn ? '<span class="text-[0.6rem] font-light text-gray-400 bg-gray-100 rounded-full px-2 py-0.5">Kamu</span>' : ''}
+                    </div>
+                    <span class="text-[0.65rem] font-light text-gray-400">${reply.created_at}</span>
+                </div>
+                ${quoteHtml}
+                <p class="text-sm font-light text-gray-700 leading-relaxed whitespace-pre-line">${reply.body}</p>
+                <div class="flex items-center gap-3 pt-1 border-t border-gray-100">
+                    <button class="flex items-center gap-1.5 text-[0.7rem] font-light text-gray-400 hover:text-blue-700 transition-colors">
+                        <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+                            <path d="M2 7.5C2 6.7 2.7 6 3.5 6H5V3.5C5 2.7 5.7 2 6.5 2S8 2.7 8 3.5V6h1.5C10.3 6 11 6.7 11 7.5v3c0 .8-.7 1.5-1.5 1.5h-6C2.7 12 2 11.3 2 10.5v-3z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" />
+                        </svg>
+                        ${reply.likes}
+                    </button>
+                    <button onclick="quoteReply(${reply.id}, '${reply.user.name}', '${reply.body.replace(/'/g, "\\'").substring(0, 60)}')"
+                        class="flex items-center gap-1.5 text-[0.7rem] font-light text-gray-400 hover:text-blue-700 transition-colors">
+                        Balas
+                    </button>
+                </div>
+            </div>
+        </div>`;
+
+            container.appendChild(el);
+            el.scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest'
+            });
+
+            // Update reply count
+            const countEl = document.getElementById('reply-count');
+            if (countEl) countEl.textContent = parseInt(countEl.textContent) + 1 + ' Balasan';
+        }
+
+        // ── Laravel Echo — listen realtime ──
+        window.Echo.join(`thread.{{ $thread->id }}`)
+            .here((users) => {
+                updateOnlineCount(users.length);
+            })
+            .joining((user) => {
+                updateOnlineCount(null, 1);
+            })
+            .leaving((user) => {
+                updateOnlineCount(null, -1);
+            })
+            .listen('.reply.posted', (e) => {
+                appendReply(e.reply, false);
+            });
+
+        let onlineCount = 0;
+
+        function updateOnlineCount(total, delta = 0) {
+            if (total !== null) onlineCount = total;
+            else onlineCount = Math.max(1, onlineCount + delta);
+            const el = document.getElementById('online-count');
+            if (el) el.textContent = onlineCount + ' online';
         }
     </script>
 

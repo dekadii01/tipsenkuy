@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DiscussionController;
 use App\Http\Controllers\ScanQrController;
 use App\Http\Controllers\SessionQrController;
 use App\Http\Controllers\UserController;
@@ -38,10 +39,10 @@ Route::middleware(['auth', 'user'])->group(function () {
 
     // Diskusi — semua di bawah /sessions/{session}/discussion
     Route::prefix('/sessions/{session}/discussion')->name('session.discussion.')->group(function () {
-        Route::get('/', [UserController::class, 'indexDiscussion'])->name('index');
-        Route::post('/', [UserController::class, 'storeDiscussion'])->name('store');
-        Route::get('/{thread}', [UserController::class, 'showDiscussion'])->name('show');
-        Route::post('/{thread}/reply', [UserController::class, 'storeReply'])->name('reply');
+        Route::get('/',              [DiscussionController::class, 'index'])->name('index');
+        Route::post('/',             [DiscussionController::class, 'store'])->name('store');
+        Route::get('/{thread}',      [DiscussionController::class, 'show'])->name('show');
+        Route::post('/{thread}/reply', [DiscussionController::class, 'storeReply'])->name('reply');
     });
 });
 
