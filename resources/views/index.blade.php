@@ -54,7 +54,7 @@
 
                             <div x-show="open" @click.outside="open = false" x-transition
                                 class="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden z-50">
-                                <a href="{{ route('dashboard-admin') }}"
+                                <a href="{{ route('admin.dashboard') }}"
                                     class="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50">
                                     📊 Dashboard
                                 </a>

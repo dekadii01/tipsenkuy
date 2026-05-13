@@ -21,7 +21,10 @@ class ReplyPosted implements ShouldBroadcast
 
     public function broadcastOn(): array
     {
-        return [new PresenceChannel('session.' . $this->reply->thread->session_id)];
+        return [
+            new PresenceChannel('session.' . $this->reply->thread->session_id),
+            new PresenceChannel('thread.' . $this->reply->thread_id),
+        ];
     }
 
     public function broadcastAs(): string

@@ -2,7 +2,6 @@
 
 use Illuminate\Support\Facades\Broadcast;
 
-// ✅ Tambahkan ini — untuk halaman index diskusi
 Broadcast::channel('session.{sessionId}', function ($user, $sessionId) {
     return $user ? [
         'id'       => $user->id,
@@ -12,7 +11,6 @@ Broadcast::channel('session.{sessionId}', function ($user, $sessionId) {
     ] : false;
 });
 
-// ✅ Tetap pertahankan ini — untuk halaman detail thread
 Broadcast::channel('thread.{threadId}', function ($user, $threadId) {
     return $user ? [
         'id'       => $user->id,
