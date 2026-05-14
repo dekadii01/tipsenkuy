@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ReplyAnswerToggled;
+use App\Events\ThreadPinToggled;
 use App\Events\ReplyDeleted;
 use App\Events\ReplyPosted;
 use App\Events\ThreadDeleted;
@@ -150,6 +152,12 @@ class AdminDiscussionController extends Controller
 
         $thread->update(['is_pinned' => !$thread->is_pinned]);
 
+        broadcast(new ThreadPinToggled(
+            threadId: $thread->id,
+            sessionId: $session->id,
+            isPinned: $thread->is_pinned,
+        ))->toOthers();
+
         if ($request->expectsJson()) {
             return response()->json(['success' => true, 'is_pinned' => $thread->is_pinned]);
         }
@@ -245,6 +253,14 @@ class AdminDiscussionController extends Controller
         // Sync is_answered di thread
         $hasAnswer = $thread->replies()->where('is_answer', true)->exists();
         $thread->update(['is_answered' => $hasAnswer]);
+
+        broadcast(new ReplyAnswerToggled(
+            replyId: $reply->id,
+            threadId: $thread->id,
+            sessionId: $session->id,
+            isAnswer: $reply->is_answer,
+            isAnswered: $thread->is_answered,
+        ))->toOthers();
 
         if ($request->expectsJson()) {
             return response()->json([

@@ -497,6 +497,27 @@
                 .listen('.reply.deleted', e => {
                     removeReplyCard(e.reply_id);
                     decrementReplyCount();
+                })
+                .listen('.reply.answer.toggled', e => {
+                    const card = document.getElementById(`reply-${e.reply_id}`);
+                    if (card) updateReplyAnswerUI(card, e.is_answer);
+                    updateAnsweredUI(e.is_answered);
+
+                    // Update tombol di card yang bersangkutan
+                    const btn = card?.querySelector('[data-answer-btn]');
+                    if (btn) {
+                        btn.className =
+                            `flex items-center gap-1.5 px-2.5 py-1 border rounded-lg text-[0.7rem] font-light transition-colors ${e.is_answer ? 'text-green-700 bg-green-50 border-green-200' : 'text-gray-500 bg-white border-gray-200 hover:bg-green-50 hover:border-green-200 hover:text-green-700'}`;
+                        btn.querySelector('span').textContent = e.is_answer ? 'Batalkan Jawaban' : 'Jadikan Jawaban';
+                    }
+                })
+                .listen('.thread.pin.toggled', e => {
+                    if (e.thread_id != THREAD_ID) return;
+                    const accentBar = document.getElementById('thread-accent');
+                    if (accentBar) accentBar.className = `h-[3px] ${e.is_pinned ? 'bg-blue-900' : 'bg-gray-200'}`;
+                    document.getElementById('badge-pinned')?.classList.toggle('hidden', !e.is_pinned);
+                    setPinBtn(e.is_pinned);
+                    setSidebarPinBtn(e.is_pinned);
                 });
         }
         initEcho();
@@ -552,7 +573,7 @@
             btn.className =
                 `flex items-center gap-1.5 px-3 py-1.5 border rounded-lg text-xs font-light transition-colors ${isAnswered ? 'text-green-700 bg-green-50 border-green-200' : 'text-gray-500 bg-white border-gray-200 hover:bg-green-50 hover:border-green-200 hover:text-green-700'}`;
             document.getElementById('btn-answered-label').textContent = isAnswered ? 'Batalkan Terjawab' :
-            'Tandai Terjawab';
+                'Tandai Terjawab';
             // Sidebar btn
             const sbtn = document.getElementById('sidebar-btn-answered');
             sbtn.className =
@@ -743,7 +764,7 @@
                                 <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M2 7.5C2 6.7 2.7 6 3.5 6H5V3.5C5 2.7 5.7 2 6.5 2S8 2.7 8 3.5V6h1.5C10.3 6 11 6.7 11 7.5v3c0 .8-.7 1.5-1.5 1.5h-6C2.7 12 2 11.3 2 10.5v-3z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" /></svg>
                                 <span id="likes-${r.id}">${r.likes}</span> suka
                             </div>
-                            <button onclick="toggleMarkAnswer(${r.id}, this)"
+                            <button data-answer-btn onclick="toggleMarkAnswer(${r.id}, this)"
                                 class="flex items-center gap-1.5 px-2.5 py-1 border rounded-lg text-[0.7rem] font-light transition-colors ${r.is_answer ? 'text-green-700 bg-green-50 border-green-200' : 'text-gray-500 bg-white border-gray-200 hover:bg-green-50 hover:border-green-200 hover:text-green-700'}">
                                 <svg width="10" height="10" viewBox="0 0 12 12" fill="none"><path d="M2 6l3 3 5-5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                 <span>${r.is_answer ? 'Batalkan Jawaban' : 'Jadikan Jawaban'}</span>
