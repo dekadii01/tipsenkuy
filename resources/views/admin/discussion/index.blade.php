@@ -19,7 +19,7 @@
                     <path d="M3.5 2l3 3-3 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
                         stroke-linejoin="round" />
                 </svg>
-                <a href="{{ route('admin.attendance.detail', $session['id']) }}"
+                <a href="{{ route('admin.attendance.detail', $session->id) }}"
                     class="text-xs font-light text-gray-400 hover:text-gray-600 transition-colors no-underline">Detail
                     Sesi</a>
                 <svg width="10" height="10" viewBox="0 0 10 10" fill="none" class="text-gray-300">
@@ -38,7 +38,7 @@
                         Moderasi dan kelola forum diskusi sesi ini
                     </p>
                 </div>
-                <a href="{{ route('admin.attendance.detail', $session['id']) }}"
+                <a href="{{ route('admin.attendance.detail', $session->id) }}"
                     class="flex items-center gap-1.5 px-3 py-1.5 border border-gray-200 hover:bg-gray-50 hover:border-gray-300 text-xs font-light text-gray-600 rounded-xl transition-colors no-underline self-start shrink-0">
                     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" class="text-gray-400">
                         <path d="M8 3L4 6l4 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"
@@ -585,35 +585,91 @@
             });
         }
 
-        function renderOnlineParticipants(users) {
+        const PARTICIPANTS_PREVIEW = 4; // jumlah awal yang ditampilkan
+
+        function renderAllParticipants() {
             const container = document.getElementById('online-participants');
             if (!container) return;
-            if (!users.length) {
-                container.innerHTML = '<p class="text-xs font-light text-gray-400">Tidak ada peserta online.</p>';
+
+            if (!ALL_PARTICIPANTS.length) {
+                container.innerHTML = '<p class="text-xs font-light text-gray-400">Belum ada peserta.</p>';
                 return;
             }
-            container.innerHTML = users.map(u => {
+
+            const showAll = container.dataset.showAll === 'true';
+
+            // Urutkan: admin → online → offline → nama
+            const sorted = [...ALL_PARTICIPANTS].sort((a, b) => {
+                const aOnline = onlineUserIds.has(a.id);
+                const bOnline = onlineUserIds.has(b.id);
+                if (a.role === 'admin' && b.role !== 'admin') return -1;
+                if (b.role === 'admin' && a.role !== 'admin') return 1;
+                if (aOnline && !bOnline) return -1;
+                if (!aOnline && bOnline) return 1;
+                return a.name.localeCompare(b.name);
+            });
+
+            const visible = showAll ? sorted : sorted.slice(0, PARTICIPANTS_PREVIEW);
+            const remaining = sorted.length - PARTICIPANTS_PREVIEW;
+
+            const items = visible.map(u => {
+                const isOnline = onlineUserIds.has(u.id);
                 const isAdmin = u.role === 'admin';
+                const isMe = u.id === CURRENT_UID;
                 const avatarCls = isAdmin ? 'bg-blue-900 text-white' :
                     'bg-blue-50 border border-blue-100 text-blue-900';
+                const avatarOpacity = isOnline ? '' : 'opacity-40';
+                const nameCls = isOnline ? 'text-gray-700' : 'text-gray-400';
+                const statusCls = isOnline ? 'text-green-500' : 'text-gray-300';
+                const dotCls = isOnline ? 'bg-green-500' : 'bg-gray-300';
+                const statusTxt = isOnline ? (isAdmin ? 'Online · Dosen/Admin' : 'Online') : 'Offline';
+                const meBadge = isMe ? ' <span class=\"text-gray-400 font-light\">(kamu)</span>' : '';
+
                 return `
                     <div class="flex items-center gap-2.5">
                         <div class="relative shrink-0">
-                            <div class="w-7 h-7 rounded-lg flex items-center justify-center text-[0.6rem] font-medium ${avatarCls}">${u.initials}</div>
-                            <span class="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-green-500 border border-white"></span>
+                            <div class="w-7 h-7 rounded-lg flex items-center justify-center text-[0.6rem] font-medium ${avatarCls} ${avatarOpacity}">${u.initials}</div>
+                            <span class="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full ${dotCls} border border-white"></span>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-xs font-normal text-gray-700 truncate">${u.name}</p>
-                            <p class="text-[0.62rem] font-light text-green-500">Online</p>
+                            <p class="text-xs font-normal ${nameCls} truncate">${u.name}${meBadge}</p>
+                            <p class="text-[0.62rem] font-light ${statusCls}">${statusTxt}</p>
                         </div>
                     </div>`;
             }).join('');
+
+            // Tombol toggle
+            let toggleBtn = '';
+            if (sorted.length > PARTICIPANTS_PREVIEW) {
+                if (!showAll) {
+                    toggleBtn = `
+                    <button onclick="toggleParticipantList()" class="mt-1 text-[0.7rem] font-light text-blue-600 hover:text-blue-800 transition-colors text-left">
+                        Lihat ${remaining} lainnya ↓
+                    </button>`;
+                } else {
+                    toggleBtn = `
+                    <button onclick="toggleParticipantList()" class="mt-1 text-[0.7rem] font-light text-gray-400 hover:text-gray-600 transition-colors text-left">
+                        Sembunyikan ↑
+                    </button>`;
+                }
+            }
+
+            container.innerHTML = items + toggleBtn;
         }
 
-        function updateParticipantBadge(user, isOnline) {
-            // Re-render sederhana: cukup update count saja
-            // Full re-render bisa dilakukan jika diperlukan
-            renderOnlineCount();
+        function toggleParticipantList() {
+            const container = document.getElementById('online-participants');
+            if (!container) return;
+            container.dataset.showAll = container.dataset.showAll === 'true' ? 'false' : 'true';
+            renderAllParticipants();
+        }
+
+        function renderOnlineParticipants(_users) {
+            renderAllParticipants();
+        }
+
+        function updateParticipantBadge(_user, _isOnline) {
+            renderAllParticipants();
         }
 
         function showToast(msg, isError = false) {
