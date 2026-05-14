@@ -8,7 +8,7 @@
         <section class="flex flex-col gap-2">
 
             <nav class="flex items-center gap-1.5 flex-wrap">
-                <a href="{{ route('dashboard-admin') }}"
+                <a href="{{ route('admin.dashboard') }}"
                     class="text-xs font-light text-gray-400 hover:text-gray-600 transition-colors no-underline">
                     Dashboard
                 </a>
@@ -157,7 +157,7 @@
 
                 <div class="flex flex-col-reverse sm:flex-row sm:justify-end gap-2.5">
 
-                    <a href="{{ route('dashboard-admin') }}"
+                    <a href="{{ route('admin.dashboard') }}"
                         class="flex items-center justify-center py-2.5 px-6 border border-gray-200 hover:bg-gray-50 hover:border-gray-300 text-sm font-light text-gray-600 rounded-xl transition-all duration-200 no-underline">
                         Batal
                     </a>
