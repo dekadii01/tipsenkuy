@@ -39,7 +39,7 @@
             <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                 <div>
                     <h1 class="text-2xl font-light tracking-tight text-gray-900">
-                        Diskusi <span class="font-medium">Kelas Basis Data</span>
+                        Diskusi <span class="font-medium">Kelas {{ $session->nama_sesi }}</span>
                     </h1>
                     <p class="text-sm font-light text-gray-400 mt-1">
                         Forum tanya jawab dan diskusi antara peserta dan dosen
