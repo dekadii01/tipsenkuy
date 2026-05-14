@@ -31,9 +31,14 @@ class User extends Authenticatable
     }
 
     protected $fillable = [
-    'first_name',
-    'last_name',
-    'email',
-    'password',
-];
+        'first_name',
+        'last_name',
+        'email',
+        'password',
+    ];
+
+    public function attendances()
+    {
+        return $this->hasMany(\App\Models\Attendance::class, 'user_id');
+    }
 }

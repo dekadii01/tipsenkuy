@@ -7,6 +7,7 @@ use App\Events\ThreadPosted;
 use App\Models\ClassSession;
 use App\Models\DiscussionReply;
 use App\Models\DiscussionThread;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -31,6 +32,16 @@ class DiscussionController extends Controller
 
         $threads = $query->paginate(10)->withQueryString();
 
+        $allParticipants = User::where('role', '!=', 'admin')
+            ->select('id', 'first_name', 'last_name', 'role')
+            ->get()
+            ->map(fn($u) => [
+                'id'       => $u->id,
+                'name'     => $u->first_name . ' ' . $u->last_name,
+                'initials' => strtoupper(substr($u->first_name, 0, 1) . substr($u->last_name ?? '', 0, 1)),
+                'role'     => $u->role,
+            ]);
+
         $detailSession = ClassSession::where('id', $session->id)->first();
 
         $stats = [
@@ -42,7 +53,7 @@ class DiscussionController extends Controller
 
         $onlineCount = 0; // Akan di-update via real-time dari Echo
 
-        return view('user.discussion.index', compact('session', 'threads', 'stats', 'tab', 'onlineCount', 'detailSession'));
+        return view('user.discussion.index', compact('session', 'threads', 'stats', 'tab', 'onlineCount', 'detailSession', 'allParticipants'));
     }
 
     // ── Buat thread baru ───────────────────────────────────────

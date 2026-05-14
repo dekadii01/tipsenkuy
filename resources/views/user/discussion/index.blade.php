@@ -386,11 +386,12 @@
 
     <script>
         // ── Realtime discussion index ──────────────────────────────
-
+        const ALL_PARTICIPANTS = @json($allParticipants);
         const SESSION_ID = {{ $session->id }};
         const CURRENT_UID = {{ auth()->id() }};
 
         let onlineUsers = []; // simpan list user online
+        let onlineUserIds = new Set();
 
         function initEcho() {
             if (!window.Echo) {
@@ -401,19 +402,21 @@
             window.Echo.join(`session.${SESSION_ID}`)
                 .here((users) => {
                     onlineUsers = users;
+                    onlineUserIds = new Set(users.map(u => u.id));
                     renderOnline();
                     renderParticipants();
                 })
                 .joining((user) => {
-                    // Cegah duplikat
                     if (!onlineUsers.find(u => u.id === user.id)) {
                         onlineUsers.push(user);
                     }
+                    onlineUserIds.add(user.id);
                     renderOnline();
                     renderParticipants();
                 })
                 .leaving((user) => {
                     onlineUsers = onlineUsers.filter(u => u.id !== user.id);
+                    onlineUserIds.delete(user.id);
                     renderOnline();
                     renderParticipants();
                 })
@@ -453,43 +456,53 @@
             const container = document.getElementById('active-participants');
             if (!container) return;
 
-            if (onlineUsers.length === 0) {
-                container.innerHTML = `<p class="text-xs font-light text-gray-400">Belum ada yang online.</p>`;
-                return;
-            }
-
-            // Urutkan: current user di atas, lalu admin, lalu sisanya
-            const sorted = [...onlineUsers].sort((a, b) => {
+            // Urutkan: current user → admin → online → offline
+            const sorted = [...ALL_PARTICIPANTS].sort((a, b) => {
                 if (a.id === CURRENT_UID) return -1;
                 if (b.id === CURRENT_UID) return 1;
+                const aOnline = onlineUserIds.has(a.id);
+                const bOnline = onlineUserIds.has(b.id);
                 if (a.role === 'admin' && b.role !== 'admin') return -1;
                 if (b.role === 'admin' && a.role !== 'admin') return 1;
+                if (aOnline && !bOnline) return -1;
+                if (!aOnline && bOnline) return 1;
                 return 0;
             });
 
             container.innerHTML = sorted.map(user => {
                 const isAdmin = user.role === 'admin';
                 const isMe = user.id === CURRENT_UID;
+                const isOnline = onlineUserIds.has(user.id);
+
                 const avatarClass = isAdmin ?
                     'bg-blue-900 text-white' :
                     'bg-blue-50 border border-blue-100 text-blue-900';
-                const roleLabel = isAdmin ?
-                    'Dosen / Admin' :
-                    (isMe ? 'Kamu' : 'Peserta');
+
+                const roleLabel = isAdmin ? 'Dosen / Admin' : (isMe ? 'Kamu' : 'Peserta');
+
+                // Badge online/offline
+                const badge = isOnline ?
+                    `<span class="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-green-500 border border-white"></span>` :
+                    `<span class="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-gray-300 border border-white"></span>`;
+
+                // Nama sedikit redup kalau offline
+                const nameClass = isOnline ? 'text-gray-700' : 'text-gray-400';
 
                 return `
             <div class="flex items-center gap-2.5">
                 <div class="relative shrink-0">
-                    <div class="w-7 h-7 rounded-lg flex items-center justify-center text-[0.6rem] font-medium ${avatarClass}">
+                    <div class="w-7 h-7 rounded-lg flex items-center justify-center text-[0.6rem] font-medium ${avatarClass} ${!isOnline ? 'opacity-50' : ''}">
                         ${user.initials}
                     </div>
-                    <span class="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-green-500 border border-white"></span>
+                    ${badge}
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="text-xs font-normal text-gray-700 truncate">
+                    <p class="text-xs font-normal ${nameClass} truncate">
                         ${user.name}${isMe ? ' <span class="text-gray-400 font-light">(kamu)</span>' : ''}
                     </p>
-                    <p class="text-[0.62rem] font-light text-gray-400">${roleLabel}</p>
+                    <p class="text-[0.62rem] font-light ${isOnline ? 'text-green-500' : 'text-gray-300'}">
+                        ${isOnline ? 'Online · ' + roleLabel : 'Offline'}
+                    </p>
                 </div>
             </div>`;
             }).join('');
@@ -498,7 +511,7 @@
         // ── Render online count ──
         function renderOnline() {
             document.querySelectorAll('[data-online-count]').forEach(el => {
-                el.textContent = onlineUsers.length + ' online';
+                el.textContent = onlineUserIds.size + ' online';
             });
         }
 
