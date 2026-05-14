@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ReplyDeleted;
 use App\Events\ReplyPosted;
+use App\Events\ThreadDeleted;
 use App\Events\ThreadPosted;
 use App\Models\ClassSession;
 use App\Models\DiscussionReply;
@@ -125,6 +127,7 @@ class DiscussionController extends Controller
                 'success' => true,
                 'reply'   => [
                     'id'         => $reply->id,
+                    'thread_id' => $reply->thread_id,
                     'body'       => $reply->body,
                     'is_answer'  => $reply->is_answer,
                     'likes'      => $reply->likes,
@@ -144,5 +147,70 @@ class DiscussionController extends Controller
         }
 
         return back()->with('success', 'Balasan terkirim.');
+    }
+
+    // ── Hapus thread ───────────────────────────────────────────
+    public function destroyThread(ClassSession $session, DiscussionThread $thread, Request $request)
+    {
+        abort_if($thread->session_id !== $session->id, 404);
+
+        $user = Auth::user();
+
+        if ($user->role !== 'admin' && $thread->user_id !== $user->id) {
+            abort(403);
+        }
+
+        if ($user->role !== 'admin' && $thread->replies()->where('user_id', '!=', $user->id)->exists()) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Thread tidak bisa dihapus karena sudah ada balasan dari peserta lain.',
+                ], 403);
+            }
+            return back()->with('error', 'Thread tidak bisa dihapus.');
+        }
+
+        $threadId  = $thread->id;
+        $sessionId = $session->id;
+
+        $thread->replies()->delete();
+        $thread->delete();
+
+        // ← broadcast SETELAH delete
+        broadcast(new ThreadDeleted($threadId, $sessionId))->toOthers();
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true]);
+        }
+
+        return redirect()->route('session.discussion.index', $session->id)
+            ->with('success', 'Thread berhasil dihapus.');
+    }
+
+    public function destroyReply(ClassSession $session, DiscussionThread $thread, DiscussionReply $reply, Request $request)
+    {
+        abort_if($thread->session_id !== $session->id, 404);
+        abort_if($reply->thread_id !== $thread->id, 404);
+
+        $user = Auth::user();
+
+        if ($user->role !== 'admin' && $reply->user_id !== $user->id) {
+            abort(403);
+        }
+
+        $replyId   = $reply->id;
+        $threadId  = $thread->id;
+        $sessionId = $session->id;
+
+        $reply->delete();
+
+        // ← broadcast SETELAH delete
+        broadcast(new ReplyDeleted($replyId, $threadId, $sessionId))->toOthers();
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true]);
+        }
+
+        return back()->with('success', 'Balasan berhasil dihapus.');
     }
 }

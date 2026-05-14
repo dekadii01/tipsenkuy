@@ -200,17 +200,36 @@
                                             </span>
                                         </div>
 
-                                        <div class="flex items-center gap-1.5 shrink-0">
-                                            <svg width="12" height="12" viewBox="0 0 14 14" fill="none"
-                                                class="text-gray-400">
-                                                <path d="M12 8a2 2 0 0 1-2 2H4l-2 2V4a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v4z"
-                                                    stroke="currentColor" stroke-width="1.2"
-                                                    stroke-linejoin="round" />
-                                            </svg>
-                                            <span class="text-[0.7rem] font-light text-gray-400"
-                                                id="reply-count-{{ $thread->id }}">
-                                                {{ $thread->replies_count }} balasan
-                                            </span>
+                                        <div class="flex items-center gap-3 shrink-0">
+                                            <div class="flex items-center gap-1.5">
+                                                <svg width="12" height="12" viewBox="0 0 14 14"
+                                                    fill="none" class="text-gray-400">
+                                                    <path
+                                                        d="M12 8a2 2 0 0 1-2 2H4l-2 2V4a2 2 0 0 1 2-2h6a2 2 0 0 1 2 2v4z"
+                                                        stroke="currentColor" stroke-width="1.2"
+                                                        stroke-linejoin="round" />
+                                                </svg>
+                                                <span class="text-[0.7rem] font-light text-gray-400"
+                                                    id="reply-count-{{ $thread->id }}">
+                                                    {{ $thread->replies_count }} balasan
+                                                </span>
+                                            </div>
+
+                                            {{-- Tombol hapus: tampil hanya untuk pemilik thread (jika belum ada reply orang lain) --}}
+                                            @if (auth()->id() === $thread->user_id && $thread->replies_count === 0)
+                                                <button
+                                                    onclick="event.preventDefault(); deleteThread({{ $thread->id }}, this)"
+                                                    class="flex items-center gap-1 text-[0.65rem] font-light text-gray-300 hover:text-red-500 transition-colors"
+                                                    title="Hapus thread">
+                                                    <svg width="11" height="11" viewBox="0 0 12 12"
+                                                        fill="none">
+                                                        <path d="M2 3h8M5 3V2h2v1M4.5 3v6.5h3V3" stroke="currentColor"
+                                                            stroke-width="1.2" stroke-linecap="round"
+                                                            stroke-linejoin="round" />
+                                                    </svg>
+                                                    Hapus
+                                                </button>
+                                            @endif
                                         </div>
 
                                     </div>
@@ -427,7 +446,17 @@
                 .listen('.reply.posted', (e) => {
                     incrementReplyBadge(e.reply.thread_id);
                     bumpStat('total_replies');
-                });
+                })
+                .listen('.thread.deleted', (e) => {
+                    const card = document.getElementById(`thread-card-${e.thread_id}`) ??
+                        document.querySelector(`a[href*="/discussion/${e.thread_id}"]`);
+                    if (!card) return;
+                    card.style.transition = 'opacity 0.3s, transform 0.3s';
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateX(8px)';
+                    setTimeout(() => card.remove(), 300);
+                    bumpStat('total_threads', -1);
+                });;
         }
         initEcho();
 
@@ -587,11 +616,51 @@
             setTimeout(() => el.classList.remove('text-blue-700'), 2000);
         }
 
+        // ── Hapus thread ──
+        async function deleteThread(threadId, btn) {
+            if (!confirm('Hapus thread ini? Tindakan tidak bisa dibatalkan.')) return;
+
+            btn.disabled = true;
+            btn.textContent = 'Menghapus...';
+
+            try {
+                const res = await fetch(`/sessions/${SESSION_ID}/discussion/${threadId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json',
+                    },
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    const card = document.getElementById(`thread-card-${threadId}`) ??
+                        btn.closest('a');
+                    if (card) {
+                        card.style.transition = 'opacity 0.3s, transform 0.3s';
+                        card.style.opacity = '0';
+                        card.style.transform = 'translateX(8px)';
+                        setTimeout(() => card.remove(), 300);
+                    }
+                    bumpStat('total_threads', -1);
+                } else {
+                    alert(data.message ?? 'Gagal menghapus thread.');
+                    btn.disabled = false;
+                    btn.textContent = 'Hapus';
+                }
+            } catch (err) {
+                console.error(err);
+                btn.disabled = false;
+                btn.textContent = 'Hapus';
+            }
+        }
+
         // ── Bump stat counter di sidebar ──
-        function bumpStat(key) {
+        function bumpStat(key, delta = 1) {
             const el = document.querySelector(`[data-stat="${key}"]`);
             if (!el) return;
-            el.textContent = parseInt(el.textContent || '0') + 1;
+            el.textContent = Math.max(0, parseInt(el.textContent || '0') + delta);
         }
 
         // ── Toast notification ──

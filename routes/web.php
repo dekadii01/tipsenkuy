@@ -43,6 +43,12 @@ Route::middleware(['auth', 'user'])->group(function () {
         Route::post('/',             [DiscussionController::class, 'store'])->name('store');
         Route::get('/{thread}',      [DiscussionController::class, 'show'])->name('show');
         Route::post('/{thread}/reply', [DiscussionController::class, 'storeReply'])->name('reply');
+        // Delete thread (user: hanya milik sendiri & belum ada reply)
+        Route::delete('/{thread}', [DiscussionController::class, 'destroyThread'])
+            ->name('session.discussion.destroy');
+        // Delete reply (user: hanya milik sendiri)
+        Route::delete('/{thread}/reply/{reply}', [DiscussionController::class, 'destroyReply'])
+            ->name('session.discussion.reply.destroy');
     });
 });
 

@@ -241,7 +241,20 @@
                                             </svg>
                                             Balas
                                         </button>
-
+                                        {{-- Hapus reply --}}
+                                        @if (auth()->id() === $reply->user_id)
+                                            <button
+                                                onclick="deleteReply({{ $reply->id }}, {{ $thread->id }}, this)"
+                                                class="flex items-center gap-1.5 text-[0.7rem] font-light text-gray-300 hover:text-red-500 transition-colors ml-auto">
+                                                <svg width="12" height="12" viewBox="0 0 12 12"
+                                                    fill="none">
+                                                    <path d="M2 3h8M5 3V2h2v1M4.5 3v6.5h3V3" stroke="currentColor"
+                                                        stroke-width="1.2" stroke-linecap="round"
+                                                        stroke-linejoin="round" />
+                                                </svg>
+                                                Hapus
+                                            </button>
+                                        @endif
                                         {{-- Mark answer --}}
                                         @if (!$reply->is_answer && (auth()->id() === $thread->user_id || auth()->user()->role === 'admin'))
                                             <button
@@ -574,10 +587,10 @@
             const isAdmin = reply.user.role === 'admin';
 
             const quoteHtml = reply.quoted_reply ? `
-                <div class="px-3 py-2 bg-gray-50 border-l-2 border-blue-200 rounded-r-xl">
-                    <p class="text-[0.65rem] font-normal text-blue-600">${reply.quoted_reply.author}</p>
-                    <p class="text-[0.7rem] font-light text-gray-500 line-clamp-2">${reply.quoted_reply.body}</p>
-                </div>` : '';
+        <div class="px-3 py-2 bg-gray-50 border-l-2 border-blue-200 rounded-r-xl">
+            <p class="text-[0.65rem] font-normal text-blue-600">${reply.quoted_reply.author}</p>
+            <p class="text-[0.7rem] font-light text-gray-500 line-clamp-2">${reply.quoted_reply.body}</p>
+        </div>` : '';
 
             const adminBadge = isAdmin ?
                 `<span class="text-[0.6rem] font-normal text-blue-700 bg-blue-50 border border-blue-200 rounded-full px-2 py-0.5">Admin</span>` :
@@ -591,41 +604,53 @@
                 'bg-blue-900 text-white' :
                 'bg-blue-50 border border-blue-100 text-blue-900';
 
+            // ← Tombol hapus hanya muncul untuk reply milik sendiri
+            const deleteBtn = isOwn ? `
+        <button onclick="deleteReply(${reply.id}, ${reply.thread_id ?? '{{ $thread->id }}' }, this)"
+            class="flex items-center gap-1.5 text-[0.7rem] font-light text-gray-300 hover:text-red-500 transition-colors ml-auto">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                <path d="M2 3h8M5 3V2h2v1M4.5 3v6.5h3V3" stroke="currentColor"
+                    stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Hapus
+        </button>` : '';
+
             const el = document.createElement('div');
             el.className = 'flex gap-3 group';
             el.id = `reply-${reply.id}`;
             el.innerHTML = `
-                <div class="flex flex-col items-center pt-1 shrink-0">
-                    <div class="w-8 h-8 rounded-lg flex items-center justify-center text-[0.65rem] font-semibold shrink-0 ${avatarClass}">
-                        ${reply.user.initials}
+        <div class="flex flex-col items-center pt-1 shrink-0">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center text-[0.65rem] font-semibold shrink-0 ${avatarClass}">
+                ${reply.user.initials}
+            </div>
+        </div>
+        <div class="flex-1 mb-3 rounded-2xl overflow-hidden border border-gray-200 bg-white">
+            <div class="p-4 flex flex-col gap-3">
+                <div class="flex items-center justify-between gap-2 flex-wrap">
+                    <div class="flex items-center gap-2">
+                        <p class="text-sm font-normal text-gray-800">${reply.user.name}</p>
+                        ${adminBadge}
+                        ${ownBadge}
                     </div>
+                    <span class="text-[0.65rem] font-light text-gray-400">${reply.created_at}</span>
                 </div>
-                <div class="flex-1 mb-3 rounded-2xl overflow-hidden border border-gray-200 bg-white">
-                    <div class="p-4 flex flex-col gap-3">
-                        <div class="flex items-center justify-between gap-2 flex-wrap">
-                            <div class="flex items-center gap-2">
-                                <p class="text-sm font-normal text-gray-800">${reply.user.name}</p>
-                                ${adminBadge}
-                                ${ownBadge}
-                            </div>
-                            <span class="text-[0.65rem] font-light text-gray-400">${reply.created_at}</span>
-                        </div>
-                        ${quoteHtml}
-                        <p class="text-sm font-light text-gray-700 leading-relaxed whitespace-pre-line">${reply.body}</p>
-                        <div class="flex items-center gap-3 pt-1 border-t border-gray-100">
-                            <button class="flex items-center gap-1.5 text-[0.7rem] font-light text-gray-400 hover:text-blue-700 transition-colors">
-                                <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
-                                    <path d="M2 7.5C2 6.7 2.7 6 3.5 6H5V3.5C5 2.7 5.7 2 6.5 2S8 2.7 8 3.5V6h1.5C10.3 6 11 6.7 11 7.5v3c0 .8-.7 1.5-1.5 1.5h-6C2.7 12 2 11.3 2 10.5v-3z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
-                                </svg>
-                                ${reply.likes ?? 0}
-                            </button>
-                            <button onclick="quoteReply(${reply.id}, '${reply.user.name.replace(/'/g, "\\'")}', '${reply.body.replace(/'/g, "\\'").replace(/\n/g, ' ').substring(0, 60)}')"
-                                class="flex items-center gap-1.5 text-[0.7rem] font-light text-gray-400 hover:text-blue-700 transition-colors">
-                                Balas
-                            </button>
-                        </div>
-                    </div>
-                </div>`;
+                ${quoteHtml}
+                <p class="text-sm font-light text-gray-700 leading-relaxed whitespace-pre-line">${reply.body}</p>
+                <div class="flex items-center gap-3 pt-1 border-t border-gray-100">
+                    <button class="flex items-center gap-1.5 text-[0.7rem] font-light text-gray-400 hover:text-blue-700 transition-colors">
+                        <svg width="12" height="12" viewBox="0 0 14 14" fill="none">
+                            <path d="M2 7.5C2 6.7 2.7 6 3.5 6H5V3.5C5 2.7 5.7 2 6.5 2S8 2.7 8 3.5V6h1.5C10.3 6 11 6.7 11 7.5v3c0 .8-.7 1.5-1.5 1.5h-6C2.7 12 2 11.3 2 10.5v-3z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
+                        </svg>
+                        ${reply.likes ?? 0}
+                    </button>
+                    <button onclick="quoteReply(${reply.id}, '${reply.user.name.replace(/'/g, "\\'")}', '${reply.body.replace(/'/g, "\\'").replace(/\n/g, ' ').substring(0, 60)}')"
+                        class="flex items-center gap-1.5 text-[0.7rem] font-light text-gray-400 hover:text-blue-700 transition-colors">
+                        Balas
+                    </button>
+                    ${deleteBtn}
+                </div>
+            </div>
+        </div>`;
 
             container.appendChild(el);
             el.scrollIntoView({
@@ -633,7 +658,6 @@
                 block: 'nearest'
             });
 
-            // Update reply count di dua tempat
             const countEl = document.getElementById('reply-count');
             const sidebarEl = document.getElementById('sidebar-reply-count');
             const currentCount = parseInt(countEl?.textContent) || 0;
@@ -668,6 +692,20 @@
                 .listen('.reply.posted', (e) => {
                     if (document.getElementById(`reply-${e.reply.id}`)) return;
                     appendReply(e.reply, false);
+                })
+                .listen('.reply.deleted', (e) => {
+                    const replyEl = document.getElementById(`reply-${e.reply_id}`);
+                    if (!replyEl) return;
+                    replyEl.style.transition = 'opacity 0.3s, transform 0.3s';
+                    replyEl.style.opacity = '0';
+                    replyEl.style.transform = 'translateX(8px)';
+                    setTimeout(() => replyEl.remove(), 300);
+
+                    const countEl = document.getElementById('reply-count');
+                    const sidebarEl = document.getElementById('sidebar-reply-count');
+                    const current = parseInt(countEl?.textContent) || 0;
+                    if (countEl) countEl.textContent = Math.max(0, current - 1) + ' Balasan';
+                    if (sidebarEl) sidebarEl.textContent = Math.max(0, current - 1) + ' balasan';
                 });
 
             function renderOnline() {
@@ -679,6 +717,51 @@
         function renderOnline() {
             const el = document.getElementById('online-count');
             if (el) el.textContent = onlineCount + ' online';
+        }
+
+        // ── Hapus reply ──
+        async function deleteReply(replyId, threadId, btn) {
+            if (!confirm('Hapus balasan ini?')) return;
+
+            btn.disabled = true;
+            btn.textContent = 'Menghapus...';
+
+            try {
+                const res = await fetch(`/sessions/{{ $session->id }}/discussion/${threadId}/reply/${replyId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json',
+                    },
+                });
+
+                const data = await res.json();
+
+                if (data.success) {
+                    const replyEl = document.getElementById(`reply-${replyId}`);
+                    if (replyEl) {
+                        replyEl.style.transition = 'opacity 0.3s, transform 0.3s';
+                        replyEl.style.opacity = '0';
+                        replyEl.style.transform = 'translateX(8px)';
+                        setTimeout(() => replyEl.remove(), 300);
+                    }
+
+                    // Update reply count
+                    const countEl = document.getElementById('reply-count');
+                    const sidebarEl = document.getElementById('sidebar-reply-count');
+                    const current = parseInt(countEl?.textContent) || 0;
+                    if (countEl) countEl.textContent = Math.max(0, current - 1) + ' Balasan';
+                    if (sidebarEl) sidebarEl.textContent = Math.max(0, current - 1) + ' balasan';
+                } else {
+                    alert('Gagal menghapus balasan.');
+                    btn.disabled = false;
+                    btn.textContent = 'Hapus';
+                }
+            } catch (err) {
+                console.error(err);
+                btn.disabled = false;
+                btn.textContent = 'Hapus';
+            }
         }
     </script>
 
