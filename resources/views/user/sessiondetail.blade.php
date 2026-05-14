@@ -395,15 +395,17 @@
                         <div class="grid grid-cols-2 gap-2">
                             <div
                                 class="flex flex-col items-center gap-0.5 px-3 py-3 bg-gray-50 border border-gray-200 rounded-xl">
-                                <p class="text-base font-light text-gray-900">14</p>
+                                <p class="text-base font-light text-gray-900">{{ $totalThreads }}</p>
                                 <p class="text-[0.62rem] font-light text-gray-400 text-center leading-tight">
                                     Total<br>diskusi</p>
                             </div>
                             <div
                                 class="flex flex-col items-center gap-0.5 px-3 py-3 bg-gray-50 border border-gray-200 rounded-xl">
-                                <p class="text-base font-light text-blue-900">3</p>
+                                <p class="text-base font-light text-blue-900">
+                                    {{ \App\Models\DiscussionThread::where('session_id', $session->id)->where('is_answered', false)->count() }}
+                                </p>
                                 <p class="text-[0.62rem] font-light text-gray-400 text-center leading-tight">
-                                    Belum<br>dibaca</p>
+                                    Belum<br>dijawab</p>
                             </div>
                         </div>
 
@@ -411,22 +413,23 @@
                         <div class="flex flex-col gap-2">
                             <p class="text-[0.65rem] font-normal text-gray-400 uppercase tracking-widest">Terbaru</p>
                             <div class="flex flex-col gap-2">
-                                @foreach ([['Kapan tugas dikumpulkan?', 'Budi S.', '10m'], ['Materi pertemuan ke-4', 'Admin', '1j']] as [$title, $author, $time])
+                                @foreach ($latesThread as $thread)
                                     <div
                                         class="flex items-start gap-2.5 px-3 py-2.5 bg-gray-50 border border-gray-100 rounded-xl">
                                         <div
                                             class="w-6 h-6 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-[0.55rem] font-medium text-blue-900 shrink-0 mt-0.5">
-                                            {{ strtoupper(substr($author, 0, 2)) }}
+                                            {{ strtoupper(substr($thread->user->first_name, 0, 2)) }}
                                         </div>
                                         <div class="flex-1 min-w-0">
-                                            <p class="text-xs font-normal text-gray-700 truncate">{{ $title }}
+                                            <p class="text-xs font-normal text-gray-700 truncate">{{ $thread->title }}
                                             </p>
                                             <div class="flex items-center gap-1.5 mt-0.5">
                                                 <span
-                                                    class="text-[0.62rem] font-light text-gray-400">{{ $author }}</span>
+                                                    class="text-[0.62rem] font-light text-gray-400">{{ $thread->user->first_name }}
+                                                    {{ $thread->user->last_name }}</span>
                                                 <span class="text-gray-300 text-[0.6rem]">·</span>
                                                 <span
-                                                    class="text-[0.62rem] font-light text-gray-400">{{ $time }}</span>
+                                                    class="text-[0.62rem] font-light text-gray-400">{{ $thread->created_at->diffForHumans() }}</span>
                                             </div>
                                         </div>
                                     </div>

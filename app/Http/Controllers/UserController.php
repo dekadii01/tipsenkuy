@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Attendance;
 use App\Models\ClassSession;
+use App\Models\DiscussionThread;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -88,8 +89,15 @@ class UserController extends Controller
             ->where('session_id', $session->id)
             ->first();
         $allUser = User::where('role', 'user')->get()->take(4);
-
         $totalPeserta = User::where('role', 'user')->count();
+
+        $latesThread = DiscussionThread::where('session_id', $session->id)
+            ->with('user')
+            ->withCount('replies')
+            ->orderByDesc('created_at')
+            ->limit(2)
+            ->get();
+        $totalThreads = DiscussionThread::where('session_id', $session->id)->count();
 
         $userAttended = $attendance !== null;
 
@@ -106,7 +114,9 @@ class UserController extends Controller
             'userAttended',
             'sessionStatus',
             'totalPeserta',
-            'allUser'
+            'allUser',
+            'latesThread',
+            'totalThreads'
         ));
     }
 
