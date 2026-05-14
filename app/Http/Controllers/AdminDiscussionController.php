@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ReplyDeleted;
 use App\Events\ReplyPosted;
 use App\Events\ThreadDeleted;
 use App\Events\ThreadPosted;
-use App\Events\ReplyDeleted;
 use App\Models\ClassSession;
 use App\Models\DiscussionReply;
 use App\Models\DiscussionThread;
@@ -43,7 +43,6 @@ class AdminDiscussionController extends Controller
 
         $threads = $query->paginate(10)->withQueryString();
 
-        // Semua peserta untuk sidebar kontributor
         $contributors = User::select('id', 'first_name', 'last_name', 'role')
             ->withCount([
                 'discussionThreads as post_count' => fn($q) =>
@@ -54,10 +53,10 @@ class AdminDiscussionController extends Controller
             ->limit(5)
             ->get()
             ->map(fn($u) => [
-                'id'        => $u->id,
-                'name'      => $u->first_name . ' ' . $u->last_name,
-                'initials'  => strtoupper(substr($u->first_name, 0, 1) . substr($u->last_name ?? '', 0, 1)),
-                'role'      => $u->role,
+                'id'         => $u->id,
+                'name'       => $u->first_name . ' ' . $u->last_name,
+                'initials'   => strtoupper(substr($u->first_name, 0, 1) . substr($u->last_name ?? '', 0, 1)),
+                'role'       => $u->role,
                 'post_count' => $u->post_count,
             ]);
 
@@ -73,7 +72,6 @@ class AdminDiscussionController extends Controller
                 ->whereHas('thread', fn($q) => $q->where('session_id', $session->id))->count(),
         ];
 
-        // Semua user di sesi untuk presence channel (sama seperti user side)
         $allParticipants = User::select('id', 'first_name', 'last_name', 'role')
             ->get()
             ->map(fn($u) => [
@@ -136,6 +134,7 @@ class AdminDiscussionController extends Controller
         $otherThreads = DiscussionThread::where('session_id', $session->id)
             ->where('id', '!=', $thread->id)
             ->withCount('replies')
+            ->with('user')
             ->orderByDesc('created_at')
             ->limit(4)
             ->get();
@@ -152,13 +151,25 @@ class AdminDiscussionController extends Controller
         $thread->update(['is_pinned' => !$thread->is_pinned]);
 
         if ($request->expectsJson()) {
-            return response()->json([
-                'success'   => true,
-                'is_pinned' => $thread->is_pinned,
-            ]);
+            return response()->json(['success' => true, 'is_pinned' => $thread->is_pinned]);
         }
 
         return back()->with('success', $thread->is_pinned ? 'Thread disematkan.' : 'Pin dilepas.');
+    }
+
+    // ── Toggle answered ────────────────────────────────────────
+    public function toggleAnswered(int $id, DiscussionThread $thread, Request $request)
+    {
+        $session = ClassSession::findOrFail($id);
+        abort_if($thread->session_id !== $session->id, 404);
+
+        $thread->update(['is_answered' => !$thread->is_answered]);
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true, 'is_answered' => $thread->is_answered]);
+        }
+
+        return back()->with('success', $thread->is_answered ? 'Thread ditandai terjawab.' : 'Status terjawab dibatalkan.');
     }
 
     // ── Hapus thread ───────────────────────────────────────────
@@ -179,7 +190,87 @@ class AdminDiscussionController extends Controller
             return response()->json(['success' => true]);
         }
 
-        return back()->with('success', 'Thread berhasil dihapus.');
+        return redirect()
+            ->route('admin.attendance.discussions.index', $session->id)
+            ->with('success', 'Thread berhasil dihapus.');
+    }
+
+    // ── Kirim reply (admin) ────────────────────────────────────
+    public function storeReply(int $id, DiscussionThread $thread, Request $request)
+    {
+        $session = ClassSession::findOrFail($id);
+        abort_if($thread->session_id !== $session->id, 404);
+
+        $request->validate([
+            'body'           => 'required|string',
+            'quote_reply_id' => 'nullable|exists:discussion_replies,id',
+            'mark_as_answer' => 'nullable|boolean',
+        ]);
+
+        $reply = DiscussionReply::create([
+            'thread_id'      => $thread->id,
+            'user_id'        => Auth::id(),
+            'body'           => $request->body,
+            'quote_reply_id' => $request->quote_reply_id,
+            'is_answer'      => (bool) $request->mark_as_answer,
+        ]);
+
+        // Jika ditandai jawaban, thread otomatis terjawab
+        if ($reply->is_answer) {
+            $thread->update(['is_answered' => true]);
+        }
+
+        $reply->load('user', 'quotedReply.user');
+        broadcast(new ReplyPosted($reply))->toOthers();
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'reply'   => $this->formatReply($reply),
+            ]);
+        }
+
+        return back()->with('success', 'Balasan terkirim.');
+    }
+
+    // ── Toggle mark as answer pada reply ──────────────────────
+    public function markAnswer(int $id, DiscussionThread $thread, DiscussionReply $reply, Request $request)
+    {
+        $session = ClassSession::findOrFail($id);
+        abort_if($thread->session_id !== $session->id, 404);
+        abort_if($reply->thread_id   !== $thread->id,  404);
+
+        $reply->update(['is_answer' => !$reply->is_answer]);
+
+        // Sync is_answered di thread
+        $hasAnswer = $thread->replies()->where('is_answer', true)->exists();
+        $thread->update(['is_answered' => $hasAnswer]);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success'     => true,
+                'is_answer'   => $reply->is_answer,
+                'is_answered' => $thread->is_answered,
+            ]);
+        }
+
+        return back()->with('success', $reply->is_answer ? 'Dijadikan jawaban.' : 'Jawaban dibatalkan.');
+    }
+
+    // ── Dismiss report pada reply ──────────────────────────────
+    public function dismissReport(int $id, DiscussionThread $thread, DiscussionReply $reply, Request $request)
+    {
+        $session = ClassSession::findOrFail($id);
+        abort_if($thread->session_id !== $session->id, 404);
+        abort_if($reply->thread_id   !== $thread->id,  404);
+
+        $reply->update(['is_reported' => false]);
+
+        if ($request->expectsJson()) {
+            return response()->json(['success' => true]);
+        }
+
+        return back()->with('success', 'Laporan diabaikan.');
     }
 
     // ── Hapus reply ────────────────────────────────────────────
@@ -193,7 +284,14 @@ class AdminDiscussionController extends Controller
         $threadId  = $thread->id;
         $sessionId = $session->id;
 
+        // Jika reply ini adalah jawaban, re-check apakah thread masih terjawab
+        $wasAnswer = $reply->is_answer;
         $reply->delete();
+
+        if ($wasAnswer) {
+            $hasAnswer = $thread->replies()->where('is_answer', true)->exists();
+            $thread->update(['is_answered' => $hasAnswer]);
+        }
 
         broadcast(new ReplyDeleted($replyId, $threadId, $sessionId))->toOthers();
 
@@ -202,5 +300,31 @@ class AdminDiscussionController extends Controller
         }
 
         return back()->with('success', 'Balasan dihapus.');
+    }
+
+    // ── Helper: format reply untuk JSON response ───────────────
+    private function formatReply(DiscussionReply $reply): array
+    {
+        return [
+            'id'         => $reply->id,
+            'thread_id'  => $reply->thread_id,
+            'body'       => $reply->body,
+            'is_answer'  => $reply->is_answer,
+            'is_reported' => $reply->is_reported,
+            'likes'      => $reply->likes ?? 0,
+            'created_at' => $reply->created_at->diffForHumans(),
+            'created_at_time' => $reply->created_at->format('H:i'),
+            'user' => [
+                'id'       => $reply->user->id,
+                'name'     => $reply->user->first_name . ' ' . $reply->user->last_name,
+                'initials' => strtoupper(substr($reply->user->first_name, 0, 1) . substr($reply->user->last_name ?? '', 0, 1)),
+                'role'     => $reply->user->role,
+            ],
+            'quoted_reply' => $reply->quotedReply ? [
+                'id'     => $reply->quotedReply->id,
+                'body'   => \Str::limit($reply->quotedReply->body, 80),
+                'author' => $reply->quotedReply->user->first_name . ' ' . $reply->quotedReply->user->last_name,
+            ] : null,
+        ];
     }
 }

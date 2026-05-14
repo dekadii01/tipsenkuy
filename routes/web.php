@@ -71,11 +71,19 @@ Route::middleware(['auth', 'admin'])->prefix('/admin')->name('admin.')->group(fu
     // Discussion
     Route::prefix('/attendance/{id}/discussions')->name('attendance.discussions.')->group(function () {
         Route::get('/',    [AdminDiscussionController::class, 'index'])->name('index');
-        Route::post('/',   [AdminDiscussionController::class, 'store'])->name('store');   // ← TAMBAH INI
+        Route::post('/',   [AdminDiscussionController::class, 'store'])->name('store');
         Route::get('/{thread}',             [AdminDiscussionController::class, 'show'])->name('show');
-        Route::patch('/{thread}/pin',        [AdminDiscussionController::class, 'pin'])->name('pin');        // ← TAMBAH INI
-        Route::delete('/{thread}',           [AdminDiscussionController::class, 'destroy'])->name('destroy');    // ← TAMBAH INI
-        Route::delete('/{thread}/replies/{reply}', [AdminDiscussionController::class, 'destroyReply'])->name('reply.destroy'); // ← TAMBAH INI
+
+        // ── Thread actions ──
+        Route::patch('/{thread}/pin',        [AdminDiscussionController::class, 'pin'])->name('pin');
+        Route::patch('/{thread}/answered',   [AdminDiscussionController::class, 'toggleAnswered'])->name('answered');   // ← BARU
+        Route::delete('/{thread}',           [AdminDiscussionController::class, 'destroy'])->name('destroy');
+
+        // ── Reply actions ──
+        Route::post('/{thread}/replies',                        [AdminDiscussionController::class, 'storeReply'])->name('reply.store');    // ← BARU
+        Route::patch('/{thread}/replies/{reply}/answer',        [AdminDiscussionController::class, 'markAnswer'])->name('reply.answer');   // ← BARU
+        Route::patch('/{thread}/replies/{reply}/dismiss-report', [AdminDiscussionController::class, 'dismissReport'])->name('reply.dismiss');  // ← BARU
+        Route::delete('/{thread}/replies/{reply}',              [AdminDiscussionController::class, 'destroyReply'])->name('reply.destroy');
     });
 
     // Session controls
