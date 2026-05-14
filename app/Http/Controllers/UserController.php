@@ -87,6 +87,7 @@ class UserController extends Controller
         $attendance = Attendance::where('user_id', $user->id)
             ->where('session_id', $session->id)
             ->first();
+        $allUser = User::where('role', 'user')->get()->take(4);
 
         $totalPeserta = User::where('role', 'user')->count();
 
@@ -105,6 +106,7 @@ class UserController extends Controller
             'userAttended',
             'sessionStatus',
             'totalPeserta',
+            'allUser'
         ));
     }
 

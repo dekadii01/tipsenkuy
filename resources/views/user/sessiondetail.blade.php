@@ -456,26 +456,24 @@
                     </div>
 
                     <div class="flex flex-col gap-2">
-                        @foreach ([['Andi Pratama', true], ['Budi Santoso', false], ['Citra Dewi', true], ['Dimas Rahardjo', true]] as [$name, $online])
+                        @foreach ($allUser as $user)
                             <div class="flex items-center gap-2.5">
                                 <div class="relative shrink-0">
                                     <div
                                         class="w-7 h-7 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center text-[0.6rem] font-medium text-blue-900">
-                                        {{ strtoupper(substr($name, 0, 2)) }}
+                                        {{ strtoupper(substr($user->first_name, 0, 2)) }}
                                     </div>
-                                    @if ($online)
-                                        <span
-                                            class="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-green-500 border border-white"></span>
-                                    @endif
+                                    <span
+                                        class="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-green-500 border border-white"></span>
                                 </div>
-                                <span
-                                    class="text-xs font-light text-gray-700 truncate flex-1">{{ $name }}</span>
+                                <span class="text-xs font-light text-gray-700 truncate flex-1">{{ $user->first_name }}
+                                    {{ $user->last_name }}</span>
                             </div>
                         @endforeach
                     </div>
 
                     <p class="text-[0.65rem] font-light text-gray-400 text-center">
-                        +{{ ($totalPeserta ?? 32) - 4 }} peserta lainnya
+                        +{{ $totalPeserta - 4 }} peserta lainnya
                     </p>
 
                 </div>
