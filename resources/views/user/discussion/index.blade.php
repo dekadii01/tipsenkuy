@@ -347,37 +347,18 @@
                     </div>
                 </div>
 
+
                 {{-- Active participants --}}
                 <div class="bg-white border border-gray-200 rounded-2xl p-5 flex flex-col gap-4">
                     <div class="flex items-center justify-between">
                         <h2 class="text-sm font-medium text-gray-900">Aktif di Forum</h2>
                         <span class="flex items-center gap-1 text-[0.65rem] font-light text-green-600">
                             <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
-                            <span data-online-count>{{ $onlineCount ?? '?' }} online</span>
+                            <span data-online-count>0 online</span>
                         </span>
                     </div>
-                    <div class="flex flex-col gap-2.5">
-                        @foreach ([['Admin', 'admin', true, '3 post'], ['Budi Santoso', 'peserta', true, '2 post'], ['Citra Dewi', 'peserta', true, '1 post'], ['Dimas Rahardjo', 'peserta', false, '1 post']] as [$name, $role, $online, $posts])
-                            <div class="flex items-center gap-2.5">
-                                <div class="relative shrink-0">
-                                    <div @class([
-                                        'w-7 h-7 rounded-lg flex items-center justify-center text-[0.6rem] font-medium',
-                                        'bg-blue-900 text-white' => $role === 'admin',
-                                        'bg-blue-50 border border-blue-100 text-blue-900' => $role !== 'admin',
-                                    ])>
-                                        {{ strtoupper(substr($name, 0, 2)) }}
-                                    </div>
-                                    @if ($online)
-                                        <span
-                                            class="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-green-500 border border-white"></span>
-                                    @endif
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-xs font-normal text-gray-700 truncate">{{ $name }}</p>
-                                    <p class="text-[0.62rem] font-light text-gray-400">{{ $posts }}</p>
-                                </div>
-                            </div>
-                        @endforeach
+                    <div class="flex flex-col gap-2.5" id="active-participants">
+                        <p class="text-xs font-light text-gray-400">Memuat peserta...</p>
                     </div>
                 </div>
 
@@ -401,33 +382,37 @@
         const SESSION_ID = {{ $session->id }};
         const CURRENT_UID = {{ auth()->id() }};
 
-        let onlineCount = 0;
+        let onlineUsers = []; // simpan list user online
 
         function initEcho() {
             if (!window.Echo) {
                 setTimeout(initEcho, 100);
                 return;
             }
-            // ── Presence channel session ──
+
             window.Echo.join(`session.${SESSION_ID}`)
                 .here((users) => {
-                    onlineCount = users.length;
+                    onlineUsers = users;
                     renderOnline();
+                    renderParticipants();
                 })
-                .joining(() => {
-                    onlineCount++;
+                .joining((user) => {
+                    // Cegah duplikat
+                    if (!onlineUsers.find(u => u.id === user.id)) {
+                        onlineUsers.push(user);
+                    }
                     renderOnline();
+                    renderParticipants();
                 })
-                .leaving(() => {
-                    onlineCount = Math.max(1, onlineCount - 1);
+                .leaving((user) => {
+                    onlineUsers = onlineUsers.filter(u => u.id !== user.id);
                     renderOnline();
+                    renderParticipants();
                 })
-                // Thread baru dibuat orang lain
                 .listen('.thread.posted', (e) => {
                     prependThread(e.thread);
                     bumpStat('total_threads');
                 })
-                // Reply baru di thread manapun → update badge di kartu
                 .listen('.reply.posted', (e) => {
                     incrementReplyBadge(e.reply.thread_id);
                     bumpStat('total_replies');
@@ -456,10 +441,56 @@
             }
         });
 
+        function renderParticipants() {
+            const container = document.getElementById('active-participants');
+            if (!container) return;
+
+            if (onlineUsers.length === 0) {
+                container.innerHTML = `<p class="text-xs font-light text-gray-400">Belum ada yang online.</p>`;
+                return;
+            }
+
+            // Urutkan: current user di atas, lalu admin, lalu sisanya
+            const sorted = [...onlineUsers].sort((a, b) => {
+                if (a.id === CURRENT_UID) return -1;
+                if (b.id === CURRENT_UID) return 1;
+                if (a.role === 'admin' && b.role !== 'admin') return -1;
+                if (b.role === 'admin' && a.role !== 'admin') return 1;
+                return 0;
+            });
+
+            container.innerHTML = sorted.map(user => {
+                const isAdmin = user.role === 'admin';
+                const isMe = user.id === CURRENT_UID;
+                const avatarClass = isAdmin ?
+                    'bg-blue-900 text-white' :
+                    'bg-blue-50 border border-blue-100 text-blue-900';
+                const roleLabel = isAdmin ?
+                    'Dosen / Admin' :
+                    (isMe ? 'Kamu' : 'Peserta');
+
+                return `
+            <div class="flex items-center gap-2.5">
+                <div class="relative shrink-0">
+                    <div class="w-7 h-7 rounded-lg flex items-center justify-center text-[0.6rem] font-medium ${avatarClass}">
+                        ${user.initials}
+                    </div>
+                    <span class="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-green-500 border border-white"></span>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="text-xs font-normal text-gray-700 truncate">
+                        ${user.name}${isMe ? ' <span class="text-gray-400 font-light">(kamu)</span>' : ''}
+                    </p>
+                    <p class="text-[0.62rem] font-light text-gray-400">${roleLabel}</p>
+                </div>
+            </div>`;
+            }).join('');
+        }
+
         // ── Render online count ──
         function renderOnline() {
             document.querySelectorAll('[data-online-count]').forEach(el => {
-                el.textContent = onlineCount + ' online';
+                el.textContent = onlineUsers.length + ' online';
             });
         }
 
