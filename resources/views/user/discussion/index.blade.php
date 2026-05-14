@@ -301,7 +301,8 @@
                                     <path d="M4 1.5v2M8 1.5v2M1.5 5.5h9" stroke="currentColor" stroke-width="1.2"
                                         stroke-linecap="round" />
                                 </svg>
-                                <span class="text-xs font-light text-gray-500">Senin, 5 April 2026</span>
+                                <span
+                                    class="text-xs font-light text-gray-500">{{ $detailSession->tanggal->format('l, j F Y') }}</span>
                             </div>
                             <div class="flex items-center gap-2">
                                 <svg width="11" height="11" viewBox="0 0 12 12" fill="none"
@@ -311,7 +312,8 @@
                                     <path d="M6 3.5v2.5l1.5 1.5" stroke="currentColor" stroke-width="1.2"
                                         stroke-linecap="round" />
                                 </svg>
-                                <span class="text-xs font-light text-gray-500">08:00 – 10:00 WITA</span>
+                                <span class="text-xs font-light text-gray-500">{{ $detailSession->jam_mulai }}
+                                    – {{ $detailSession->jam_selesai }} WITA</span>
                             </div>
                             <div class="flex items-center gap-2">
                                 <svg width="11" height="11" viewBox="0 0 12 12" fill="none"
@@ -321,12 +323,18 @@
                                     <path d="M2 10c0-2.21 1.79-4 4-4s4 1.79 4 4" stroke="currentColor"
                                         stroke-width="1.2" stroke-linecap="round" />
                                 </svg>
-                                <span class="text-xs font-light text-gray-500">32 peserta</span>
+                                <span class="text-xs font-light text-gray-500">22
+                                    peserta</span>
                             </div>
                         </div>
                         <div class="flex items-center gap-1.5 mt-1">
-                            <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
-                            <span class="text-xs font-light text-green-600">Sedang berlangsung</span>
+                            @if ($detailSession->status == 'ended')
+                                <span class="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
+                                <span class="text-xs font-light text-gray-400">Sesi berakhir</span>
+                            @else
+                                <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                                <span class="text-xs font-light text-green-600">Sedang berlangsung</span>
+                            @endif
                         </div>
                     </div>
                 </div>

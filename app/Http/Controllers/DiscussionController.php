@@ -31,6 +31,8 @@ class DiscussionController extends Controller
 
         $threads = $query->paginate(10)->withQueryString();
 
+        $detailSession = ClassSession::where('id', $session->id)->first();
+
         $stats = [
             'total_threads'   => DiscussionThread::where('session_id', $session->id)->count(),
             'total_replies'   => DiscussionReply::whereHas('thread', fn($q) => $q->where('session_id', $session->id))->count(),
@@ -40,7 +42,7 @@ class DiscussionController extends Controller
 
         $onlineCount = 0; // Akan di-update via real-time dari Echo
 
-        return view('user.discussion.index', compact('session', 'threads', 'stats', 'tab', 'onlineCount'));
+        return view('user.discussion.index', compact('session', 'threads', 'stats', 'tab', 'onlineCount', 'detailSession'));
     }
 
     // ── Buat thread baru ───────────────────────────────────────
