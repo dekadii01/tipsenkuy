@@ -41,4 +41,14 @@ class User extends Authenticatable
     {
         return $this->hasMany(\App\Models\Attendance::class, 'user_id');
     }
+
+    public function discussionThreads()
+    {
+        return $this->hasMany(DiscussionThread::class, 'user_id');
+    }
+
+    public function discussionReplies()
+    {
+        return $this->hasMany(DiscussionReply::class, 'user_id');
+    }
 }

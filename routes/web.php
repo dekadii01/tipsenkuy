@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminDiscussionController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DiscussionController;
 use App\Http\Controllers\ScanQrController;
@@ -69,8 +70,12 @@ Route::middleware(['auth', 'admin'])->prefix('/admin')->name('admin.')->group(fu
 
     // Discussion
     Route::prefix('/attendance/{id}/discussions')->name('attendance.discussions.')->group(function () {
-        Route::get('/', [AdminController::class, 'indexDiscussion'])->name('index');
-        Route::get('/{thread}', [AdminController::class, 'showDiscussion'])->name('show');
+        Route::get('/',    [AdminDiscussionController::class, 'index'])->name('index');
+        Route::post('/',   [AdminDiscussionController::class, 'store'])->name('store');   // ← TAMBAH INI
+        Route::get('/{thread}',             [AdminDiscussionController::class, 'show'])->name('show');
+        Route::patch('/{thread}/pin',        [AdminDiscussionController::class, 'pin'])->name('pin');        // ← TAMBAH INI
+        Route::delete('/{thread}',           [AdminDiscussionController::class, 'destroy'])->name('destroy');    // ← TAMBAH INI
+        Route::delete('/{thread}/replies/{reply}', [AdminDiscussionController::class, 'destroyReply'])->name('reply.destroy'); // ← TAMBAH INI
     });
 
     // Session controls

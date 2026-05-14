@@ -23,7 +23,6 @@
 
 <body class="{{ $bodyClass }}">
     {{ $slot }}
-    @vite(['resources/js/app.js'])
     <script src="https://unpkg.com/html5-qrcode" defer></script>
     @livewireScripts
 </body>
